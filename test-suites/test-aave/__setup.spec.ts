@@ -101,7 +101,7 @@ const buildTestEnv = async (deployer: Signer, secondaryWallet: Signer) => {
   const aaveAdmin = await deployer.getAddress();
 
   const mockTokens = await deployAllMockTokens(deployer);
-  console.log('Deployed mocks');
+  console.log('Deployed mocks -------- 20210929');
   const addressesProvider = await deployLendingPoolAddressesProvider(AaveConfig.MarketId);
   await waitForTx(await addressesProvider.setPoolAdmin(aaveAdmin));
 
@@ -245,12 +245,8 @@ const buildTestEnv = async (deployer: Signer, secondaryWallet: Signer) => {
 
   const config = loadPoolConfig(ConfigNames.Aave);
 
-  const {
-    ATokenNamePrefix,
-    StableDebtTokenNamePrefix,
-    VariableDebtTokenNamePrefix,
-    SymbolPrefix,
-  } = config;
+  const { ATokenNamePrefix, StableDebtTokenNamePrefix, VariableDebtTokenNamePrefix, SymbolPrefix } =
+    config;
   const treasuryAddress = await getTreasuryAddress(config);
 
   await initReservesByHelper(
@@ -308,7 +304,7 @@ before(async () => {
   if (FORK) {
     await rawBRE.run('aave:mainnet');
   } else {
-    console.log('-> Deploying test environment...');
+    console.log('-> Deploying test environment... --- 20210929');
     await buildTestEnv(deployer, secondaryWallet);
   }
 

@@ -49,7 +49,7 @@ export const setInitialMarketRatesInRatesOracleByHelper = async (
     await lendingRateOracleInstance.transferOwnership(stableAndVariableTokenHelper.address)
   );
 
-  console.log(`- Oracle borrow initalization in ${chunkedTokens.length} txs`);
+  console.log(`- Oracle borrow initalization in ${chunkedTokens.length} txs - 20210929`);
   for (let chunkIndex = 0; chunkIndex < chunkedTokens.length; chunkIndex++) {
     const tx3 = await waitForTx(
       await stableAndVariableTokenHelper.setOracleBorrowRates(

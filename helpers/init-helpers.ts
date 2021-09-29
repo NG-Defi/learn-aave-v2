@@ -178,7 +178,12 @@ export const initReservesByHelper = async (
       rawInsertContractAddressInDb(strategy.name, strategyAddresses[strategy.name]);
     }
     strategyAddressPerAsset[symbol] = strategyAddresses[strategy.name];
-    console.log('Strategy address for asset %s: %s', symbol, strategyAddressPerAsset[symbol]);
+    console.log(
+      'Strategy address for asset %s: %s',
+      symbol,
+      strategyAddressPerAsset[symbol],
+      '-- 20210929'
+    );
 
     if (aTokenImpl === eContractid.AToken) {
       aTokenType[symbol] = 'generic';
@@ -253,10 +258,9 @@ export const getPairsTokenAggregator = (
       const aggregatorAddressIndex = Object.keys(aggregatorsAddresses).findIndex(
         (value) => value === tokenSymbol
       );
-      const [, aggregatorAddress] = (Object.entries(aggregatorsAddresses) as [
-        string,
-        tEthereumAddress
-      ][])[aggregatorAddressIndex];
+      const [, aggregatorAddress] = (
+        Object.entries(aggregatorsAddresses) as [string, tEthereumAddress][]
+      )[aggregatorAddressIndex];
       return [tokenAddress, aggregatorAddress];
     }
   }) as [string, string][];
