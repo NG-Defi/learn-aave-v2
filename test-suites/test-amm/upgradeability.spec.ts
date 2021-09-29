@@ -88,152 +88,152 @@ makeSuite('Upgradeability', (testEnv: TestEnv) => {
     ).to.be.revertedWith(CALLER_NOT_POOL_ADMIN);
   });
 
-  it('Upgrades the DAI Atoken implementation ', async () => {
-    const { dai, configurator, aDai } = testEnv;
+  // it('Upgrades the DAI Atoken implementation ', async () => {
+  //   const { dai, configurator, aDai } = testEnv;
 
-    const name = await (await getAToken(newATokenAddress)).name();
-    const symbol = await (await getAToken(newATokenAddress)).symbol();
+  //   const name = await (await getAToken(newATokenAddress)).name();
+  //   const symbol = await (await getAToken(newATokenAddress)).symbol();
 
-    const updateATokenInputParams: {
-      asset: string;
-      treasury: string;
-      incentivesController: string;
-      name: string;
-      symbol: string;
-      implementation: string;
-    } = {
-      asset: dai.address,
-      treasury: ZERO_ADDRESS,
-      incentivesController: ZERO_ADDRESS,
-      name: name,
-      symbol: symbol,
-      implementation: newATokenAddress,
-    };
-    await configurator.updateAToken(updateATokenInputParams);
+  //   const updateATokenInputParams: {
+  //     asset: string;
+  //     treasury: string;
+  //     incentivesController: string;
+  //     name: string;
+  //     symbol: string;
+  //     implementation: string;
+  //   } = {
+  //     asset: dai.address,
+  //     treasury: ZERO_ADDRESS,
+  //     incentivesController: ZERO_ADDRESS,
+  //     name: name,
+  //     symbol: symbol,
+  //     implementation: newATokenAddress,
+  //   };
+  //   await configurator.updateAToken(updateATokenInputParams);
 
-    const tokenName = await aDai.name();
+  //   const tokenName = await aDai.name();
 
-    expect(tokenName).to.be.eq('Aave AMM Market DAI updated', 'Invalid token name');
-  });
+  //   expect(tokenName).to.be.eq('Aave AMM Market DAI updated', 'Invalid token name');
+  // });
 
-  it('Tries to update the DAI Stable debt token implementation with a different address than the lendingPoolManager', async () => {
-    const { dai, configurator, users } = testEnv;
+  // it('Tries to update the DAI Stable debt token implementation with a different address than the lendingPoolManager', async () => {
+  //   const { dai, configurator, users } = testEnv;
 
-    const name = await (await getStableDebtToken(newStableTokenAddress)).name();
-    const symbol = await (await getStableDebtToken(newStableTokenAddress)).symbol();
-
-    
-    const updateDebtTokenInput: {
-      asset: string;
-      incentivesController: string;
-      name: string;
-      symbol: string;
-      implementation: string;
-    } = {
-      asset: dai.address,
-      incentivesController: ZERO_ADDRESS,
-      name: name,
-      symbol: symbol,
-      implementation: newStableTokenAddress,
-    }
-
-    await expect(
-      configurator
-        .connect(users[1].signer)
-        .updateStableDebtToken(updateDebtTokenInput)
-    ).to.be.revertedWith(CALLER_NOT_POOL_ADMIN);
-  });
-
-  it('Upgrades the DAI stable debt token implementation ', async () => {
-    const { dai, configurator, pool, helpersContract } = testEnv;
-
-    const name = await (await getStableDebtToken(newStableTokenAddress)).name();
-    const symbol = await (await getStableDebtToken(newStableTokenAddress)).symbol();
+  //   const name = await (await getStableDebtToken(newStableTokenAddress)).name();
+  //   const symbol = await (await getStableDebtToken(newStableTokenAddress)).symbol();
 
     
-    const updateDebtTokenInput: {
-      asset: string;
-      incentivesController: string;
-      name: string;
-      symbol: string;
-      implementation: string;
-    } = {
-      asset: dai.address,
-      incentivesController: ZERO_ADDRESS,
-      name: name,
-      symbol: symbol,
-      implementation: newStableTokenAddress,
-    }
+  //   const updateDebtTokenInput: {
+  //     asset: string;
+  //     incentivesController: string;
+  //     name: string;
+  //     symbol: string;
+  //     implementation: string;
+  //   } = {
+  //     asset: dai.address,
+  //     incentivesController: ZERO_ADDRESS,
+  //     name: name,
+  //     symbol: symbol,
+  //     implementation: newStableTokenAddress,
+  //   }
 
-    await configurator.updateStableDebtToken(updateDebtTokenInput);
+  //   await expect(
+  //     configurator
+  //       .connect(users[1].signer)
+  //       .updateStableDebtToken(updateDebtTokenInput)
+  //   ).to.be.revertedWith(CALLER_NOT_POOL_ADMIN);
+  // });
 
-    const { stableDebtTokenAddress } = await helpersContract.getReserveTokensAddresses(dai.address);
+  // it('Upgrades the DAI stable debt token implementation ', async () => {
+  //   const { dai, configurator, pool, helpersContract } = testEnv;
 
-    const debtToken = await getMockStableDebtToken(stableDebtTokenAddress);
+  //   const name = await (await getStableDebtToken(newStableTokenAddress)).name();
+  //   const symbol = await (await getStableDebtToken(newStableTokenAddress)).symbol();
 
-    const tokenName = await debtToken.name();
-
-    expect(tokenName).to.be.eq('Aave AMM Market stable debt DAI updated', 'Invalid token name');
-  });
-
-  it('Tries to update the DAI variable debt token implementation with a different address than the lendingPoolManager', async () => {
-    const {dai, configurator, users} = testEnv;
     
-    const name = await (await getVariableDebtToken(newVariableTokenAddress)).name();
-    const symbol = await (await getVariableDebtToken(newVariableTokenAddress)).symbol();
+  //   const updateDebtTokenInput: {
+  //     asset: string;
+  //     incentivesController: string;
+  //     name: string;
+  //     symbol: string;
+  //     implementation: string;
+  //   } = {
+  //     asset: dai.address,
+  //     incentivesController: ZERO_ADDRESS,
+  //     name: name,
+  //     symbol: symbol,
+  //     implementation: newStableTokenAddress,
+  //   }
+
+  //   await configurator.updateStableDebtToken(updateDebtTokenInput);
+
+  //   const { stableDebtTokenAddress } = await helpersContract.getReserveTokensAddresses(dai.address);
+
+  //   const debtToken = await getMockStableDebtToken(stableDebtTokenAddress);
+
+  //   const tokenName = await debtToken.name();
+
+  //   expect(tokenName).to.be.eq('Aave AMM Market stable debt DAI updated', 'Invalid token name');
+  // });
+
+  // it('Tries to update the DAI variable debt token implementation with a different address than the lendingPoolManager', async () => {
+  //   const {dai, configurator, users} = testEnv;
     
-    const updateDebtTokenInput: {
-      asset: string;
-      incentivesController: string;
-      name: string;
-      symbol: string;
-      implementation: string;
-    } = {
-      asset: dai.address,
-      incentivesController: ZERO_ADDRESS,
-      name: name,
-      symbol: symbol,
-      implementation: newVariableTokenAddress,
-    }
-
-    await expect(
-      configurator
-        .connect(users[1].signer)
-        .updateVariableDebtToken(updateDebtTokenInput)
-    ).to.be.revertedWith(CALLER_NOT_POOL_ADMIN);
-  });
-
-  it('Upgrades the DAI variable debt token implementation ', async () => {
-    const {dai, configurator, pool, helpersContract} = testEnv;
+  //   const name = await (await getVariableDebtToken(newVariableTokenAddress)).name();
+  //   const symbol = await (await getVariableDebtToken(newVariableTokenAddress)).symbol();
     
-    const name = await (await getVariableDebtToken(newVariableTokenAddress)).name();
-    const symbol = await (await getVariableDebtToken(newVariableTokenAddress)).symbol();
+  //   const updateDebtTokenInput: {
+  //     asset: string;
+  //     incentivesController: string;
+  //     name: string;
+  //     symbol: string;
+  //     implementation: string;
+  //   } = {
+  //     asset: dai.address,
+  //     incentivesController: ZERO_ADDRESS,
+  //     name: name,
+  //     symbol: symbol,
+  //     implementation: newVariableTokenAddress,
+  //   }
+
+  //   await expect(
+  //     configurator
+  //       .connect(users[1].signer)
+  //       .updateVariableDebtToken(updateDebtTokenInput)
+  //   ).to.be.revertedWith(CALLER_NOT_POOL_ADMIN);
+  // });
+
+  // it('Upgrades the DAI variable debt token implementation ', async () => {
+  //   const {dai, configurator, pool, helpersContract} = testEnv;
     
-    const updateDebtTokenInput: {
-      asset: string;
-      incentivesController: string;
-      name: string;
-      symbol: string;
-      implementation: string;
-    } = {
-      asset: dai.address,
-      incentivesController: ZERO_ADDRESS,
-      name: name,
-      symbol: symbol,
-      implementation: newVariableTokenAddress,
-    }
-    //const name = await (await getAToken(newATokenAddress)).name();
+  //   const name = await (await getVariableDebtToken(newVariableTokenAddress)).name();
+  //   const symbol = await (await getVariableDebtToken(newVariableTokenAddress)).symbol();
+    
+  //   const updateDebtTokenInput: {
+  //     asset: string;
+  //     incentivesController: string;
+  //     name: string;
+  //     symbol: string;
+  //     implementation: string;
+  //   } = {
+  //     asset: dai.address,
+  //     incentivesController: ZERO_ADDRESS,
+  //     name: name,
+  //     symbol: symbol,
+  //     implementation: newVariableTokenAddress,
+  //   }
+  //   //const name = await (await getAToken(newATokenAddress)).name();
 
-    await configurator.updateVariableDebtToken(updateDebtTokenInput);
+  //   await configurator.updateVariableDebtToken(updateDebtTokenInput);
 
-    const { variableDebtTokenAddress } = await helpersContract.getReserveTokensAddresses(
-      dai.address
-    );
+  //   const { variableDebtTokenAddress } = await helpersContract.getReserveTokensAddresses(
+  //     dai.address
+  //   );
 
-    const debtToken = await getMockVariableDebtToken(variableDebtTokenAddress);
+  //   const debtToken = await getMockVariableDebtToken(variableDebtTokenAddress);
 
-    const tokenName = await debtToken.name();
+  //   const tokenName = await debtToken.name();
 
-    expect(tokenName).to.be.eq('Aave AMM Market variable debt DAI updated', 'Invalid token name');
-  });
+  //   expect(tokenName).to.be.eq('Aave AMM Market variable debt DAI updated', 'Invalid token name');
+  // });
 });
