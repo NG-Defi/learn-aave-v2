@@ -1,6 +1,7 @@
 import { expect } from 'chai';
 import { makeSuite, TestEnv } from './helpers/make-suite';
 import { ProtocolErrors } from '../../helpers/types';
+import { ethers } from 'ethers';
 
 makeSuite('AToken: Modifiers', (testEnv: TestEnv) => {
   const { CT_CALLER_MUST_BE_LENDING_POOL } = ProtocolErrors;
@@ -28,6 +29,18 @@ makeSuite('AToken: Modifiers', (testEnv: TestEnv) => {
     const { aDai } = testEnv;
     const EXP_VALUE = 0;
     await expect(await aDai.totalSupply()).to.eq(EXP_VALUE);
+  });
+
+  it('check AToken.scaledTotalSupply(), its value should equal to [0]', async () => {
+    const { aDai } = testEnv;
+    const EXP_VALUE = 0;
+    await expect(await aDai.scaledTotalSupply()).to.eq(EXP_VALUE);
+  });
+
+  it('check AToken.RESERVE_TREASURY_ADDRESS(), its value should NOT equal to [addressZero]', async () => {
+    const { aDai } = testEnv;
+    const EXP_VALUE = ethers.constants.AddressZero;
+    await expect(await aDai.RESERVE_TREASURY_ADDRESS()).to.not.eq(EXP_VALUE);
   });
 
   it('Tries to invoke burn not being the LendingPool', async () => {
