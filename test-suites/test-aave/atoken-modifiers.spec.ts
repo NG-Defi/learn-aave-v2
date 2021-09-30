@@ -6,6 +6,7 @@ makeSuite('AToken: Modifiers', (testEnv: TestEnv) => {
   const { CT_CALLER_MUST_BE_LENDING_POOL } = ProtocolErrors;
 
   it('Tries to invoke mint not being the LendingPool', async () => {
+    console.log('HELLO WORLD 001 - 20210930-001');
     const { deployer, aDai } = testEnv;
     await expect(aDai.mint(deployer.address, '1', '1')).to.be.revertedWith(
       CT_CALLER_MUST_BE_LENDING_POOL
