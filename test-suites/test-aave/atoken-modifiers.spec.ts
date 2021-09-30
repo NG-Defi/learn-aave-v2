@@ -6,11 +6,16 @@ makeSuite('AToken: Modifiers', (testEnv: TestEnv) => {
   const { CT_CALLER_MUST_BE_LENDING_POOL } = ProtocolErrors;
 
   it('Tries to invoke mint not being the LendingPool', async () => {
-    console.log('HELLO WORLD 001 - 20210930-001');
     const { deployer, aDai } = testEnv;
     await expect(aDai.mint(deployer.address, '1', '1')).to.be.revertedWith(
       CT_CALLER_MUST_BE_LENDING_POOL
     );
+  });
+
+  it('check AToken.EIP712_REVISION(), its value should NOT equal to [0]', async () => {
+    const { deployer, aDai } = testEnv;
+    const EXP_VALUE = 0;
+    await expect(await aDai.EIP712_REVISION()).to.not.eq(EXP_VALUE);
   });
 
   it('Tries to invoke burn not being the LendingPool', async () => {
