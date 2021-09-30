@@ -310,6 +310,6 @@ before(async () => {
 
   await initializeMakeSuite();
   console.log('\n***************');
-  console.log('Setup and snapshot finished');
+  console.log('Setup and snapshot finished -- 2021093003');
   console.log('***************\n');
 });

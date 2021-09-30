@@ -231,7 +231,7 @@ export const initReservesByHelper = async (
   const configurator = await getLendingPoolConfiguratorProxy();
   //await waitForTx(await addressProvider.setPoolAdmin(admin));
 
-  console.log(`- Reserves initialization in ${chunkedInitInputParams.length} txs`);
+  console.log(`- Reserves initialization in ${chunkedInitInputParams.length} txs -- 2021093001`);
   for (let chunkIndex = 0; chunkIndex < chunkedInitInputParams.length; chunkIndex++) {
     const tx3 = await waitForTx(
       await configurator.batchInitReserve(chunkedInitInputParams[chunkIndex])
@@ -349,7 +349,7 @@ export const configureReservesByHelper = async (
     const chunkedSymbols = chunk(symbols, enableChunks);
     const chunkedInputParams = chunk(inputParams, enableChunks);
 
-    console.log(`- Configure reserves in ${chunkedInputParams.length} txs`);
+    console.log(`- Configure reserves in ${chunkedInputParams.length} txs -- 2021093002`);
     for (let chunkIndex = 0; chunkIndex < chunkedInputParams.length; chunkIndex++) {
       await waitForTx(
         await atokenAndRatesDeployer.configureReserves(chunkedInputParams[chunkIndex], {
