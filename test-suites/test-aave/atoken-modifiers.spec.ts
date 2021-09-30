@@ -18,6 +18,18 @@ makeSuite('AToken: Modifiers', (testEnv: TestEnv) => {
     await expect(await aDai.EIP712_REVISION()).to.not.eq(EXP_VALUE);
   });
 
+  it('check AToken.ATOKEN_REVISION(), its value should  equal to [1]', async () => {
+    const { deployer, aDai } = testEnv;
+    const EXP_VALUE = 1;
+    await expect(await aDai.ATOKEN_REVISION()).to.eq(EXP_VALUE);
+  });
+
+  it('check AToken.totalSupply(), its value should equal to [0]', async () => {
+    const { aDai } = testEnv;
+    const EXP_VALUE = 0;
+    await expect(await aDai.totalSupply()).to.eq(EXP_VALUE);
+  });
+
   it('Tries to invoke burn not being the LendingPool', async () => {
     const { deployer, aDai } = testEnv;
     await expect(aDai.burn(deployer.address, deployer.address, '1', '1')).to.be.revertedWith(
