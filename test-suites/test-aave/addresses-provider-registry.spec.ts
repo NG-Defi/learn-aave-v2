@@ -20,6 +20,21 @@ makeSuite('AddressesProviderRegistry', (testEnv: TestEnv) => {
     );
   });
 
+  it('Checks the LendingPoolAddressesProviderRegistry.owner(), its value should be [tbd]', async () => {
+    const { addressesProvider, registry } = testEnv;
+    console.log(`registry.owner: ${await registry.owner()}`);
+  });
+
+  it('Checks the users[0],users[1],users[2],users[3]', async () => {
+    const { users, registry } = testEnv;
+    console.log(`users: ${users[0].address}`);
+    console.log(`users: ${users[1].address}`);
+    console.log(`users: ${users[2].address}`);
+    console.log(`users: ${users[3].address}`);
+    console.log(`users: ${users[4].address}`);
+    console.log(`users: ${users[5].address}`);
+  });
+
   it('tries to register an addresses provider with id 0', async () => {
     const { users, registry } = testEnv;
     const { LPAPR_INVALID_ADDRESSES_PROVIDER_ID } = ProtocolErrors;
@@ -42,6 +57,7 @@ makeSuite('AddressesProviderRegistry', (testEnv: TestEnv) => {
       users[1].address,
       ' Invalid addresses provider added to the list'
     );
+    console.log(users[1].address);
   });
 
   it('Removes the mock addresses provider', async () => {
