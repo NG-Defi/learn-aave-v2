@@ -43,6 +43,24 @@ makeSuite('AToken: Modifiers', (testEnv: TestEnv) => {
     await expect(await aDai.RESERVE_TREASURY_ADDRESS()).to.not.eq(EXP_VALUE);
   });
 
+  it('check AToken.UNDERLYING_ASSET_ADDRESS(), its value should NOT equal to [addressZero]', async () => {
+    const { aDai } = testEnv;
+    const EXP_VALUE = ethers.constants.AddressZero;
+    await expect(await aDai.UNDERLYING_ASSET_ADDRESS()).to.not.eq(EXP_VALUE);
+  });
+
+  it('check AToken.POOL(), its value should NOT equal to [addressZero]', async () => {
+    const { aDai } = testEnv;
+    const EXP_VALUE = ethers.constants.AddressZero;
+    await expect(await aDai.POOL()).to.not.eq(EXP_VALUE);
+  });
+
+  it('check AToken.getIncentivesController(), its value should equal to [addressZero]', async () => {
+    const { aDai } = testEnv;
+    const EXP_VALUE = ethers.constants.AddressZero;
+    await expect(await aDai.getIncentivesController()).to.eq(EXP_VALUE);
+  });
+
   it('Tries to invoke burn not being the LendingPool', async () => {
     const { deployer, aDai } = testEnv;
     await expect(aDai.burn(deployer.address, deployer.address, '1', '1')).to.be.revertedWith(
