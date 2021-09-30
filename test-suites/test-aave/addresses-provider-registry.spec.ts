@@ -6,6 +6,9 @@ const { expect } = require('chai');
 
 makeSuite('AddressesProviderRegistry', (testEnv: TestEnv) => {
   it('Checks the addresses provider is added to the registry', async () => {
+    console.log('****************** TEST001 20210930001 ****************');
+    console.log('****************** TEST001 20210930001 ****************');
+    console.log('****************** TEST001 20210930001 ****************');
     const { addressesProvider, registry } = testEnv;
 
     const providers = await registry.getAddressesProvidersList();
