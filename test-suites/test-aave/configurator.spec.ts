@@ -42,10 +42,18 @@ makeSuite('LendingPoolConfigurator', (testEnv: TestEnv) => {
     expect(isActive).to.be.equal(true);
   });
 
-  it('Check the onlyAaveAdmin on deactivateReserve ', async () => {
+  it('Check the onlyAaveAdmin on deactivateReserve, test for user[2] ', async () => {
     const { configurator, users, weth } = testEnv;
     await expect(
       configurator.connect(users[2].signer).deactivateReserve(weth.address),
+      CALLER_NOT_POOL_ADMIN
+    ).to.be.revertedWith(CALLER_NOT_POOL_ADMIN);
+  });
+
+  it('Check the onlyAaveAdmin on deactivateReserve, test for user[1] ', async () => {
+    const { configurator, users, weth } = testEnv;
+    await expect(
+      configurator.connect(users[1].signer).deactivateReserve(weth.address),
       CALLER_NOT_POOL_ADMIN
     ).to.be.revertedWith(CALLER_NOT_POOL_ADMIN);
   });
@@ -120,7 +128,7 @@ makeSuite('LendingPoolConfigurator', (testEnv: TestEnv) => {
     expect(reserveFactor).to.be.equal(strategyWETH.reserveFactor);
   });
 
-  it('Check the onlyAaveAdmin on freezeReserve ', async () => {
+  it('Check the onlyAaveAdmin on freezeReserve, test for user[2]', async () => {
     const { configurator, users, weth } = testEnv;
     await expect(
       configurator.connect(users[2].signer).freezeReserve(weth.address),
@@ -128,10 +136,26 @@ makeSuite('LendingPoolConfigurator', (testEnv: TestEnv) => {
     ).to.be.revertedWith(CALLER_NOT_POOL_ADMIN);
   });
 
-  it('Check the onlyAaveAdmin on unfreezeReserve ', async () => {
+  it('Check the onlyAaveAdmin on unfreezeReserve, test for user[2]', async () => {
     const { configurator, users, weth } = testEnv;
     await expect(
       configurator.connect(users[2].signer).unfreezeReserve(weth.address),
+      CALLER_NOT_POOL_ADMIN
+    ).to.be.revertedWith(CALLER_NOT_POOL_ADMIN);
+  });
+
+  it('Check the onlyAaveAdmin on freezeReserve, test for user[1]', async () => {
+    const { configurator, users, weth } = testEnv;
+    await expect(
+      configurator.connect(users[1].signer).freezeReserve(weth.address),
+      CALLER_NOT_POOL_ADMIN
+    ).to.be.revertedWith(CALLER_NOT_POOL_ADMIN);
+  });
+
+  it('Check the onlyAaveAdmin on unfreezeReserve, test for user[1]', async () => {
+    const { configurator, users, weth } = testEnv;
+    await expect(
+      configurator.connect(users[1].signer).unfreezeReserve(weth.address),
       CALLER_NOT_POOL_ADMIN
     ).to.be.revertedWith(CALLER_NOT_POOL_ADMIN);
   });
