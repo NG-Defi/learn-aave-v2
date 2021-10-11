@@ -232,6 +232,22 @@ makeSuite('LendingPoolConfigurator', (testEnv: TestEnv) => {
     ).to.be.revertedWith(CALLER_NOT_POOL_ADMIN);
   });
 
+  it('Check the onlyAaveAdmin on disableBorrowingOnReserve, users[1]', async () => {
+    const { configurator, users, weth } = testEnv;
+    await expect(
+      configurator.connect(users[1].signer).disableBorrowingOnReserve(weth.address),
+      CALLER_NOT_POOL_ADMIN
+    ).to.be.revertedWith(CALLER_NOT_POOL_ADMIN);
+  });
+
+  it('Check the onlyAaveAdmin on enableBorrowingOnReserve, users[1] ', async () => {
+    const { configurator, users, weth } = testEnv;
+    await expect(
+      configurator.connect(users[1].signer).enableBorrowingOnReserve(weth.address, true),
+      CALLER_NOT_POOL_ADMIN
+    ).to.be.revertedWith(CALLER_NOT_POOL_ADMIN);
+  });
+
   it('Deactivates the ETH reserve as collateral', async () => {
     const { configurator, helpersContract, weth } = testEnv;
     await configurator.configureReserveAsCollateral(weth.address, 0, 0, 0);
@@ -286,11 +302,21 @@ makeSuite('LendingPoolConfigurator', (testEnv: TestEnv) => {
     expect(reserveFactor).to.be.equal(strategyWETH.reserveFactor);
   });
 
-  it('Check the onlyAaveAdmin on configureReserveAsCollateral ', async () => {
+  it('Check the onlyAaveAdmin on configureReserveAsCollateral, test for users[2]', async () => {
     const { configurator, users, weth } = testEnv;
     await expect(
       configurator
         .connect(users[2].signer)
+        .configureReserveAsCollateral(weth.address, '7500', '8000', '10500'),
+      CALLER_NOT_POOL_ADMIN
+    ).to.be.revertedWith(CALLER_NOT_POOL_ADMIN);
+  });
+
+  it('Check the onlyAaveAdmin on configureReserveAsCollateral, test for users[1]', async () => {
+    const { configurator, users, weth } = testEnv;
+    await expect(
+      configurator
+        .connect(users[1].signer)
         .configureReserveAsCollateral(weth.address, '7500', '8000', '10500'),
       CALLER_NOT_POOL_ADMIN
     ).to.be.revertedWith(CALLER_NOT_POOL_ADMIN);
