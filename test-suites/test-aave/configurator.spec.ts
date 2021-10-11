@@ -50,10 +50,18 @@ makeSuite('LendingPoolConfigurator', (testEnv: TestEnv) => {
     ).to.be.revertedWith(CALLER_NOT_POOL_ADMIN);
   });
 
-  it('Check the onlyAaveAdmin on activateReserve ', async () => {
+  it('Check the onlyAaveAdmin on activateReserve,test for user[2]', async () => {
     const { configurator, users, weth } = testEnv;
     await expect(
       configurator.connect(users[2].signer).activateReserve(weth.address),
+      CALLER_NOT_POOL_ADMIN
+    ).to.be.revertedWith(CALLER_NOT_POOL_ADMIN);
+  });
+
+  it('Check the onlyAaveAdmin on activateReserve, test for user[1]', async () => {
+    const { configurator, users, weth } = testEnv;
+    await expect(
+      configurator.connect(users[1].signer).activateReserve(weth.address),
       CALLER_NOT_POOL_ADMIN
     ).to.be.revertedWith(CALLER_NOT_POOL_ADMIN);
   });
