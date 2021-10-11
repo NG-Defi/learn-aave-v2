@@ -135,9 +135,9 @@ makeSuite('AToken: Transfer', (testEnv: TestEnv) => {
 
     const aDAItoTransfer = await convertToCurrencyDecimals(dai.address, '100');
 
-    await aDai.connect(users[1].signer).transfer(users[0].address, aDAItoTransfer);
+    await aDai.connect(users[1].signer).transfer(users[2].address, aDAItoTransfer);
 
-    const user0Balance = await aDai.balanceOf(users[0].address);
+    const user0Balance = await aDai.balanceOf(users[2].address);
 
     expect(user0Balance.toString()).to.be.eq(aDAItoTransfer.toString());
   });
