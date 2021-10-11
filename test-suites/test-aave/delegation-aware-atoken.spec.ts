@@ -68,7 +68,7 @@ makeSuite('AToken: underlying delegation', (testEnv: TestEnv) => {
     ).to.be.revertedWith(ProtocolErrors.CALLER_NOT_POOL_ADMIN);
   });
 
-  it('Tries to delegate to user 2', async () => {
+  it('Tries to delegate to user 2, test for users[0]', async () => {
     const { users } = testEnv;
 
     await delegationAToken.delegateUnderlyingTo(users[2].address);
