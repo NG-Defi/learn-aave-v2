@@ -345,6 +345,7 @@ makeSuite('LendingPoolConfigurator', (testEnv: TestEnv) => {
     expect(liquidationThreshold).to.be.equal(strategyWETH.liquidationThreshold);
     expect(liquidationBonus).to.be.equal(strategyWETH.liquidationBonus);
     expect(stableBorrowRateEnabled).to.be.equal(false);
+    console.log(`stableBorrowRateEnabled: ${stableBorrowRateEnabled}`);
     expect(reserveFactor).to.be.equal(strategyWETH.reserveFactor);
   });
 
@@ -371,6 +372,7 @@ makeSuite('LendingPoolConfigurator', (testEnv: TestEnv) => {
     expect(liquidationThreshold).to.be.equal(strategyWETH.liquidationThreshold);
     expect(liquidationBonus).to.be.equal(strategyWETH.liquidationBonus);
     expect(stableBorrowRateEnabled).to.be.equal(true);
+    console.log(`stableBorrowRateEnabled: ${stableBorrowRateEnabled}`);
     expect(reserveFactor).to.be.equal(strategyWETH.reserveFactor);
   });
 
