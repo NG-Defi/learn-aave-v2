@@ -1,10 +1,16 @@
-import { APPROVAL_AMOUNT_LENDING_POOL, MAX_UINT_AMOUNT, ZERO_ADDRESS } from '../../helpers/constants';
+import {
+  APPROVAL_AMOUNT_LENDING_POOL,
+  MAX_UINT_AMOUNT,
+  ZERO_ADDRESS,
+} from '../../helpers/constants';
 import { convertToCurrencyDecimals } from '../../helpers/contracts-helpers';
 import { expect } from 'chai';
 import { ethers } from 'ethers';
 import { RateMode, ProtocolErrors } from '../../helpers/types';
 import { makeSuite, TestEnv } from './helpers/make-suite';
 import { CommonsConfig } from '../../markets/aave/commons';
+
+const { parseEther, formatEther } = ethers.utils;
 
 const AAVE_REFERRAL = CommonsConfig.ProtocolGlobalParams.AaveReferral;
 
@@ -37,6 +43,7 @@ makeSuite('AToken: Transfer', (testEnv: TestEnv) => {
 
     const fromBalance = await aDai.balanceOf(users[0].address);
     const toBalance = await aDai.balanceOf(users[1].address);
+    console.log(`toBalance: ${formatEther(toBalance)}`);
 
     expect(fromBalance.toString()).to.be.equal('0', INVALID_FROM_BALANCE_AFTER_TRANSFER);
     expect(toBalance.toString()).to.be.equal(
@@ -46,16 +53,30 @@ makeSuite('AToken: Transfer', (testEnv: TestEnv) => {
   });
 
   it('User 0 deposits 1 WETH and user 1 tries to borrow the WETH with the received DAI as collateral', async () => {
-    const { users, pool, weth, helpersContract } = testEnv;
+    const { users, pool, weth, dai, aDai, helpersContract } = testEnv;
     const userAddress = await pool.signer.getAddress();
 
     await weth.connect(users[0].signer).mint(await convertToCurrencyDecimals(weth.address, '1'));
 
     await weth.connect(users[0].signer).approve(pool.address, APPROVAL_AMOUNT_LENDING_POOL);
 
+    console.log(
+      `BEFORE: weth.balanceOf(user0): ${formatEther(await weth.balanceOf(users[0].address))}`
+    );
+    console.log(
+      `BEFORE: weth.balanceOf(user1): ${formatEther(await weth.balanceOf(users[1].address))}`
+    );
+
+    console.log(
+      `BEFORE: aDai.balanceOf(user0): ${formatEther(await aDai.balanceOf(users[0].address))}`
+    );
+    console.log(
+      `BEFORE: aDai.balanceOf(user1): ${formatEther(await aDai.balanceOf(users[1].address))}`
+    );
+
     await pool
       .connect(users[0].signer)
-      .deposit(weth.address, ethers.utils.parseEther('1.0'), userAddress, '0');
+      .deposit(weth.address, ethers.utils.parseEther('1'), userAddress, '0');
     await pool
       .connect(users[1].signer)
       .borrow(
@@ -65,6 +86,30 @@ makeSuite('AToken: Transfer', (testEnv: TestEnv) => {
         AAVE_REFERRAL,
         users[1].address
       );
+
+    // await pool
+    // .connect(users[2].signer)
+    // .borrow(
+    //   weth.address,
+    //   ethers.utils.parseEther('0.1'),
+    //   RateMode.Stable,
+    //   AAVE_REFERRAL,
+    //   users[2].address
+    // );
+
+    console.log(
+      `AFTER: weth.balanceOf(user0): ${formatEther(await weth.balanceOf(users[0].address))}`
+    );
+    console.log(
+      `AFTER: weth.balanceOf(user1): ${formatEther(await weth.balanceOf(users[1].address))}`
+    );
+
+    console.log(
+      `AFTER: aDai.balanceOf(user0): ${formatEther(await aDai.balanceOf(users[0].address))}`
+    );
+    console.log(
+      `AFTER: aDai.balanceOf(user1): ${formatEther(await aDai.balanceOf(users[1].address))}`
+    );
 
     const userReserveData = await helpersContract.getUserReserveData(
       weth.address,
