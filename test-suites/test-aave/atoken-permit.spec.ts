@@ -8,7 +8,7 @@ import { DRE } from '../../helpers/misc-utils';
 import { waitForTx } from '../../helpers/misc-utils';
 import { _TypedDataEncoder } from 'ethers/lib/utils';
 
-const { parseEther } = ethers.utils;
+const { parseEther, formatEther } = ethers.utils;
 
 makeSuite('AToken: Permit', (testEnv: TestEnv) => {
   it('Checks the domain separator', async () => {
@@ -28,9 +28,11 @@ makeSuite('AToken: Permit', (testEnv: TestEnv) => {
 
   it('Get aDAI for tests', async () => {
     const { dai, pool, deployer } = testEnv;
+    console.log(`BEFORE: dai.totalSupply(): ${formatEther(await dai.totalSupply())}`);
 
     await dai.mint(parseEther('20000'));
     await dai.approve(pool.address, parseEther('20000'));
+    console.log(`AFTER: dai.totalSupply(): ${formatEther(await dai.totalSupply())}`);
 
     await pool.deposit(dai.address, parseEther('20000'), deployer.address, 0);
   });
@@ -88,6 +90,7 @@ makeSuite('AToken: Permit', (testEnv: TestEnv) => {
     const spender = users[1];
 
     const chainId = DRE.network.config.chainId || BUIDLEREVM_CHAINID;
+    console.log(`chainId: ${chainId}`);
     const deadline = MAX_UINT_AMOUNT;
     const nonce = (await aDai._nonces(owner.address)).toNumber();
     const permitAmount = parseEther('2').toString();
