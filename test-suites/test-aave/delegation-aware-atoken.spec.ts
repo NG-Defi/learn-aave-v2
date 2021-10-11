@@ -46,16 +46,25 @@ makeSuite('AToken: underlying delegation', (testEnv: TestEnv) => {
       false
     );
 
-    //await delegationAToken.initialize(pool.address, ZERO_ADDRESS, delegationERC20.address, ZERO_ADDRESS, '18', 'aDEL', 'aDEL');
+    // await delegationAToken.initialize(pool.address, ZERO_ADDRESS, delegationERC20.address, ZERO_ADDRESS, '18', 'aDEL', 'aDEL');
 
     console.log((await delegationAToken.decimals()).toString());
+    expect(await delegationAToken.decimals()).to.be.equal(18);
   });
 
-  it('Tries to delegate with the caller not being the Aave admin', async () => {
+  it('Tries to delegate with the caller not being the Aave admin,test for users[1]', async () => {
     const { users } = testEnv;
 
     await expect(
       delegationAToken.connect(users[1].signer).delegateUnderlyingTo(users[2].address)
+    ).to.be.revertedWith(ProtocolErrors.CALLER_NOT_POOL_ADMIN);
+  });
+
+  it('Tries to delegate with the caller not being the Aave admin,test for users[2]', async () => {
+    const { users } = testEnv;
+
+    await expect(
+      delegationAToken.connect(users[2].signer).delegateUnderlyingTo(users[2].address)
     ).to.be.revertedWith(ProtocolErrors.CALLER_NOT_POOL_ADMIN);
   });
 
