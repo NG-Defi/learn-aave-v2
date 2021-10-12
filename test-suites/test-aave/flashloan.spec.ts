@@ -431,6 +431,7 @@ makeSuite('LendingPool FlashLoan function', (testEnv: TestEnv) => {
   it('Deposits USDC into the reserve', async () => {
     const { usdc, pool } = testEnv;
     const userAddress = await pool.signer.getAddress();
+    console.log(`userAddress: ${userAddress}`);
 
     await usdc.mint(await convertToCurrencyDecimals(usdc.address, '1000'));
 
@@ -479,6 +480,49 @@ makeSuite('LendingPool FlashLoan function', (testEnv: TestEnv) => {
     expect(currentLiqudityRate).to.be.equal('0', 'Invalid liquidity rate');
     expect(currentLiquidityIndex).to.be.equal(
       new BigNumber('1.00045').multipliedBy(oneRay).toFixed(),
+      'Invalid liquidity index'
+    );
+    expect(currentUserBalance.toString()).to.be.equal(expectedLiquidity, 'Invalid user balance');
+  });
+
+  it('Takes out a 100 USDC flashloan, returns the funds correctly', async () => {
+    const { usdc, pool, helpersContract, deployer: depositor } = testEnv;
+
+    await _mockFlashLoanReceiver.setFailExecutionTransfer(false);
+
+    const reserveDataBefore = await helpersContract.getReserveData(usdc.address);
+
+    const flashloanAmount = await convertToCurrencyDecimals(usdc.address, '100');
+
+    await pool.flashLoan(
+      _mockFlashLoanReceiver.address,
+      [usdc.address],
+      [flashloanAmount],
+      [0],
+      _mockFlashLoanReceiver.address,
+      '0x10',
+      '0'
+    );
+
+    const reserveDataAfter = helpersContract.getReserveData(usdc.address);
+
+    const reserveData = await helpersContract.getReserveData(usdc.address);
+    const userData = await helpersContract.getUserReserveData(usdc.address, depositor.address);
+
+    const totalLiquidity = reserveData.availableLiquidity
+      .add(reserveData.totalStableDebt)
+      .add(reserveData.totalVariableDebt)
+      .toString();
+    const currentLiqudityRate = reserveData.liquidityRate.toString();
+    const currentLiquidityIndex = reserveData.liquidityIndex.toString();
+    const currentUserBalance = userData.currentATokenBalance.toString();
+
+    const expectedLiquidity = await convertToCurrencyDecimals(usdc.address, '1000.54');
+
+    expect(totalLiquidity).to.be.equal(expectedLiquidity, 'Invalid total liquidity');
+    expect(currentLiqudityRate).to.be.equal('0', 'Invalid liquidity rate');
+    expect(currentLiquidityIndex).to.be.equal(
+      new BigNumber('1.00054').multipliedBy(oneRay).toFixed(),
       'Invalid liquidity index'
     );
     expect(currentUserBalance.toString()).to.be.equal(expectedLiquidity, 'Invalid user balance');
