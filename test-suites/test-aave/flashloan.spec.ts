@@ -41,15 +41,45 @@ makeSuite('LendingPool FlashLoan function', (testEnv: TestEnv) => {
     await weth.approve(pool.address, APPROVAL_AMOUNT_LENDING_POOL);
 
     await pool.deposit(weth.address, amountToDeposit, userAddress, '0');
+    console.log(`weth.blanceOf(pool.address): ${await weth.balanceOf(pool.address)}`);
   });
 
-  it('Takes WETH flashloan with mode = 0, returns the funds correctly', async () => {
+  it('Takes WETH flashloan with mode = 0, returns the funds correctly, flashloan(0.7 WETH)', async () => {
     const { pool, helpersContract, weth } = testEnv;
 
     await pool.flashLoan(
       _mockFlashLoanReceiver.address,
       [weth.address],
-      [ethers.utils.parseEther('0.8')],
+      [ethers.utils.parseEther('0.7')],
+      [0],
+      _mockFlashLoanReceiver.address,
+      '0x10',
+      '0'
+    );
+
+    ethers.utils.parseUnits('10000');
+
+    const reserveData = await helpersContract.getReserveData(weth.address);
+
+    const currentLiquidityRate = reserveData.liquidityRate;
+    const currentLiquidityIndex = reserveData.liquidityIndex;
+
+    const totalLiquidity = new BigNumber(reserveData.availableLiquidity.toString())
+      .plus(reserveData.totalStableDebt.toString())
+      .plus(reserveData.totalVariableDebt.toString());
+
+    expect(totalLiquidity.toString()).to.be.equal('1000630000000000000');
+    expect(currentLiquidityRate.toString()).to.be.equal('0');
+    expect(currentLiquidityIndex.toString()).to.be.equal('1000630000000000000000000000');
+  });
+
+  it('Takes WETH flashloan with mode = 0, returns the funds correctly, flashloan(0.1 WETH)', async () => {
+    const { pool, helpersContract, weth } = testEnv;
+
+    await pool.flashLoan(
+      _mockFlashLoanReceiver.address,
+      [weth.address],
+      [ethers.utils.parseEther('0.1')],
       [0],
       _mockFlashLoanReceiver.address,
       '0x10',
