@@ -528,7 +528,7 @@ makeSuite('LendingPool FlashLoan function', (testEnv: TestEnv) => {
     expect(currentUserBalance.toString()).to.be.equal(expectedLiquidity, 'Invalid user balance');
   });
 
-  it('Takes out a 500 USDC flashloan with mode = 0, does not return the funds. (revert expected)', async () => {
+  it('Takes out a 500 USDC flashloan with mode = 0, does not return the funds. (revert expected), test for users[2]', async () => {
     const { usdc, pool, users } = testEnv;
     const caller = users[2];
 
@@ -549,6 +549,27 @@ makeSuite('LendingPool FlashLoan function', (testEnv: TestEnv) => {
           '0'
         )
     ).to.be.revertedWith(VL_COLLATERAL_BALANCE_IS_0);
+  });
+
+  it('Takes out a 500 USDC flashloan with mode = 0, does not return the funds. (revert expected), test for users[3]', async () => {
+    const { usdc, pool, users } = testEnv;
+    const caller = users[3];
+
+    const flashloanAmount = await convertToCurrencyDecimals(usdc.address, '500');
+
+    await _mockFlashLoanReceiver.setFailExecutionTransfer(true);
+
+    await pool
+      .connect(caller.signer)
+      .flashLoan(
+        _mockFlashLoanReceiver.address,
+        [usdc.address],
+        [flashloanAmount],
+        [2],
+        caller.address,
+        '0x10',
+        '0'
+      );
   });
 
   it('Caller deposits 5 WETH as collateral, Takes a USDC flashloan with mode = 2, does not return the funds. A loan for caller is created', async () => {
