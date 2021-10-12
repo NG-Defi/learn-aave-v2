@@ -171,7 +171,7 @@ makeSuite('LendingPool FlashLoan function', (testEnv: TestEnv) => {
     ).to.be.revertedWith(SAFEERC20_LOWLEVEL_CALL);
   });
 
-  it('Takes WETH flashloan, simulating a receiver as EOA (revert expected)', async () => {
+  it('Takes WETH flashloan, simulating a receiver as EOA (revert expected), test for users[1]', async () => {
     const { pool, weth, users } = testEnv;
     const caller = users[1];
     await _mockFlashLoanReceiver.setFailExecutionTransfer(true);
@@ -192,9 +192,51 @@ makeSuite('LendingPool FlashLoan function', (testEnv: TestEnv) => {
     ).to.be.revertedWith(LP_INVALID_FLASH_LOAN_EXECUTOR_RETURN);
   });
 
-  it('Takes a WETH flashloan with an invalid mode. (revert expected)', async () => {
+  it('Takes WETH flashloan, simulating a receiver as EOA (revert expected), test for users[2]', async () => {
+    const { pool, weth, users } = testEnv;
+    const caller = users[2];
+    await _mockFlashLoanReceiver.setFailExecutionTransfer(true);
+    await _mockFlashLoanReceiver.setSimulateEOA(true);
+
+    await expect(
+      pool
+        .connect(caller.signer)
+        .flashLoan(
+          _mockFlashLoanReceiver.address,
+          [weth.address],
+          [ethers.utils.parseEther('0.8')],
+          [0],
+          caller.address,
+          '0x10',
+          '0'
+        )
+    ).to.be.revertedWith(LP_INVALID_FLASH_LOAN_EXECUTOR_RETURN);
+  });
+
+  it('Takes a WETH flashloan with an invalid mode. (revert expected), test for users[1]', async () => {
     const { pool, weth, users } = testEnv;
     const caller = users[1];
+    await _mockFlashLoanReceiver.setSimulateEOA(false);
+    await _mockFlashLoanReceiver.setFailExecutionTransfer(true);
+
+    await expect(
+      pool
+        .connect(caller.signer)
+        .flashLoan(
+          _mockFlashLoanReceiver.address,
+          [weth.address],
+          [ethers.utils.parseEther('0.8')],
+          [4],
+          caller.address,
+          '0x10',
+          '0'
+        )
+    ).to.be.reverted;
+  });
+
+  it('Takes a WETH flashloan with an invalid mode. (revert expected), test for users[2]', async () => {
+    const { pool, weth, users } = testEnv;
+    const caller = users[2];
     await _mockFlashLoanReceiver.setSimulateEOA(false);
     await _mockFlashLoanReceiver.setFailExecutionTransfer(true);
 
