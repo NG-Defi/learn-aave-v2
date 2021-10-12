@@ -393,9 +393,27 @@ makeSuite('LendingPool FlashLoan function', (testEnv: TestEnv) => {
     );
   });
 
-  it('tries to take a flashloan using a non contract address as receiver (revert expected)', async () => {
+  it('tries to take a flashloan using a non contract address as receiver (revert expected), test for users[1]', async () => {
     const { pool, deployer, weth, users } = testEnv;
     const caller = users[1];
+
+    await expect(
+      pool.flashLoan(
+        deployer.address,
+        [weth.address],
+        ['1000000000000000000'],
+        [2],
+        caller.address,
+        '0x10',
+        '0'
+      )
+    ).to.be.reverted;
+  });
+
+  // new test cases
+  it('tries to take a flashloan using a non contract address as receiver (revert expected), test for users[2]', async () => {
+    const { pool, deployer, weth, users } = testEnv;
+    const caller = users[2];
 
     await expect(
       pool.flashLoan(
