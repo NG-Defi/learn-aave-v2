@@ -41,6 +41,25 @@ makeSuite('LendingPoolAddressesProvider', (testEnv: TestEnv) => {
     ).to.be.revertedWith(INVALID_OWNER_REVERT_MSG);
   });
 
+  it('Test the accessibility of the LendingPoolAddressesProvider 2', async () => {
+    const { addressesProvider, users } = testEnv;
+    const mockAddress = createRandomAddress();
+    const { INVALID_OWNER_REVERT_MSG } = ProtocolErrors;
+
+    console.log(`getMarketId: ${await addressesProvider.getMarketId()}`);
+    console.log(`getLendingPool: ${await addressesProvider.getLendingPool()}`);
+    console.log(
+      `getLendingPoolConfigurator: ${await addressesProvider.getLendingPoolConfigurator()}`
+    );
+    console.log(
+      `getLendingPoolCollateralManager: ${await addressesProvider.getLendingPoolCollateralManager()}`
+    );
+    console.log(`getPoolAdmin: ${await addressesProvider.getPoolAdmin()}`);
+    console.log(`getEmergencyAdmin: ${await addressesProvider.getEmergencyAdmin()}`);
+    console.log(`getPriceOracle: ${await addressesProvider.getPriceOracle()}`);
+    console.log(`getLendingRateOracle: ${await addressesProvider.getLendingRateOracle()}`);
+  });
+
   it('Tests adding  a proxied address with `setAddressAsProxy()`', async () => {
     const { addressesProvider, users } = testEnv;
     const { INVALID_OWNER_REVERT_MSG } = ProtocolErrors;
