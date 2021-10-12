@@ -377,6 +377,21 @@ makeSuite('LendingPool FlashLoan function', (testEnv: TestEnv) => {
       TRANSFER_AMOUNT_EXCEEDS_BALANCE
     ).to.be.revertedWith(SAFEERC20_LOWLEVEL_CALL);
   });
+  // new test cases
+  it('tries to take a flashloan that is far less than the available liquidity (revert expected), test for users[3], it should works for flashloan 0.04415weth', async () => {
+    const { pool, weth, users } = testEnv;
+    const caller = users[3];
+
+    await pool.connect(caller.signer).flashLoan(
+      _mockFlashLoanReceiver.address,
+      [weth.address],
+      ['4415000000000000'], //slightly higher than the available liquidity
+      [2],
+      caller.address,
+      '0x10',
+      '0'
+    );
+  });
 
   it('tries to take a flashloan using a non contract address as receiver (revert expected)', async () => {
     const { pool, deployer, weth, users } = testEnv;
