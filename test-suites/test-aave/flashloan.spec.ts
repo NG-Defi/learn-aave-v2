@@ -102,6 +102,7 @@ makeSuite('LendingPool FlashLoan function', (testEnv: TestEnv) => {
     expect(currentLiquidityIndex.toString()).to.be.equal('1000720000000000000000000000');
   });
 
+  // TEST FOR MAXIMUM FLASHLOAN
   it('Takes an ETH flashloan with mode = 0 as big as the available liquidity', async () => {
     const { pool, helpersContract, weth } = testEnv;
 
@@ -130,9 +131,29 @@ makeSuite('LendingPool FlashLoan function', (testEnv: TestEnv) => {
     expect(currentLiquidityIndex.toString()).to.be.equal('1001620648000000000000000000');
   });
 
-  it('Takes WETH flashloan, does not return the funds with mode = 0. (revert expected)', async () => {
+  it('Takes WETH flashloan, does not return the funds with mode = 0. (revert expected), TEST FOR users[1]', async () => {
     const { pool, weth, users } = testEnv;
     const caller = users[1];
+    await _mockFlashLoanReceiver.setFailExecutionTransfer(true);
+
+    await expect(
+      pool
+        .connect(caller.signer)
+        .flashLoan(
+          _mockFlashLoanReceiver.address,
+          [weth.address],
+          [ethers.utils.parseEther('0.8')],
+          [0],
+          caller.address,
+          '0x10',
+          '0'
+        )
+    ).to.be.revertedWith(SAFEERC20_LOWLEVEL_CALL);
+  });
+
+  it('Takes WETH flashloan, does not return the funds with mode = 0. (revert expected), TEST FOR users[2]', async () => {
+    const { pool, weth, users } = testEnv;
+    const caller = users[2];
     await _mockFlashLoanReceiver.setFailExecutionTransfer(true);
 
     await expect(
