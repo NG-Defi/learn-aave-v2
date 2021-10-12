@@ -572,7 +572,7 @@ makeSuite('LendingPool FlashLoan function', (testEnv: TestEnv) => {
       );
   });
 
-  it('Caller deposits 5 WETH as collateral, Takes a USDC flashloan with mode = 2, does not return the funds. A loan for caller is created', async () => {
+  it('Caller deposits 5 WETH as collateral, Takes a USDC flashloan with mode = 2, does not return the funds. A loan for caller is created, test for users[2]', async () => {
     const { usdc, pool, weth, users, helpersContract } = testEnv;
 
     const caller = users[2];
@@ -609,6 +609,34 @@ makeSuite('LendingPool FlashLoan function', (testEnv: TestEnv) => {
     const callerDebt = await usdcDebtToken.balanceOf(caller.address);
 
     expect(callerDebt.toString()).to.be.equal('500000000', 'Invalid user debt');
+  });
+
+  it('Caller deposits 10 WETH as collateral, Takes a USDC flashloan with mode = 2, does not return the funds. A loan for caller is created, test for users[4]', async () => {
+    // const { usdc, pool, weth, users, helpersContract } = testEnv;
+    // const caller = users[4];
+    // await weth.connect(caller.signer).mint(await convertToCurrencyDecimals(weth.address, '10'));
+    // await weth.connect(caller.signer).approve(pool.address, APPROVAL_AMOUNT_LENDING_POOL);
+    // const amountToDeposit = await convertToCurrencyDecimals(weth.address, '10');
+    // await pool.connect(caller.signer).deposit(weth.address, amountToDeposit, caller.address, '0');
+    // await _mockFlashLoanReceiver.setFailExecutionTransfer(true);
+    // const flashloanAmount = await convertToCurrencyDecimals(usdc.address, '100');
+    // await pool
+    //   .connect(caller.signer)
+    //   .flashLoan(
+    //     _mockFlashLoanReceiver.address,
+    //     [usdc.address],
+    //     [flashloanAmount],
+    //     [2],
+    //     caller.address,
+    //     '0x10',
+    //     '0'
+    //   );
+    // const { variableDebtTokenAddress } = await helpersContract.getReserveTokensAddresses(
+    //   usdc.address
+    // );
+    // const usdcDebtToken = await getVariableDebtToken(variableDebtTokenAddress);
+    // const callerDebt = await usdcDebtToken.balanceOf(caller.address);
+    // expect(callerDebt.toString()).to.be.equal('500000000', 'Invalid user debt');
   });
 
   it('Caller deposits 1000 DAI as collateral, Takes a WETH flashloan with mode = 0, does not approve the transfer of the funds', async () => {
