@@ -72,7 +72,7 @@ makeSuite('LendingPool FlashLoan function', (testEnv: TestEnv) => {
     expect(currentLiquidityRate.toString()).to.be.equal('0');
     expect(currentLiquidityIndex.toString()).to.be.equal('1000630000000000000000000000');
   });
-
+  // new test cases
   it('Takes WETH flashloan with mode = 0, returns the funds correctly, flashloan(0.1 WETH)', async () => {
     const { pool, helpersContract, weth } = testEnv;
 
@@ -150,7 +150,7 @@ makeSuite('LendingPool FlashLoan function', (testEnv: TestEnv) => {
         )
     ).to.be.revertedWith(SAFEERC20_LOWLEVEL_CALL);
   });
-
+  // new test cases
   it('Takes WETH flashloan, does not return the funds with mode = 0. (revert expected), TEST FOR users[2]', async () => {
     const { pool, weth, users } = testEnv;
     const caller = users[2];
@@ -191,7 +191,7 @@ makeSuite('LendingPool FlashLoan function', (testEnv: TestEnv) => {
         )
     ).to.be.revertedWith(LP_INVALID_FLASH_LOAN_EXECUTOR_RETURN);
   });
-
+  // new test cases
   it('Takes WETH flashloan, simulating a receiver as EOA (revert expected), test for users[2]', async () => {
     const { pool, weth, users } = testEnv;
     const caller = users[2];
@@ -233,7 +233,7 @@ makeSuite('LendingPool FlashLoan function', (testEnv: TestEnv) => {
         )
     ).to.be.reverted;
   });
-
+  // new test cases
   it('Takes a WETH flashloan with an invalid mode. (revert expected), test for users[2]', async () => {
     const { pool, weth, users } = testEnv;
     const caller = users[2];
