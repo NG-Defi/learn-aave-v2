@@ -704,7 +704,7 @@ makeSuite('LendingPool FlashLoan function', (testEnv: TestEnv) => {
     ).to.be.revertedWith(SAFEERC20_LOWLEVEL_CALL);
   });
 
-  it('Caller takes a WETH flashloan with mode = 1', async () => {
+  it('Caller takes a WETH flashloan with mode = 1, flashloan(0.8)', async () => {
     const { dai, pool, weth, users, helpersContract } = testEnv;
 
     const caller = users[3];
