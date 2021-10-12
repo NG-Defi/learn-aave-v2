@@ -24,6 +24,8 @@ makeSuite('LendingPool liquidation - liquidator receiving aToken', (testEnv) => 
     const { dai, weth, users, pool, oracle } = testEnv;
     const depositor = users[0];
     const borrower = users[1];
+    console.log(`depositor.address: ${depositor.address}`);
+    console.log(`borrower.address: ${borrower.address}`);
 
     //mints DAI to depositor
     await dai.connect(depositor.signer).mint(await convertToCurrencyDecimals(dai.address, '1000'));
