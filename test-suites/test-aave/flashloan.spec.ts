@@ -25,6 +25,7 @@ makeSuite('LendingPool FlashLoan function', (testEnv: TestEnv) => {
     SAFEERC20_LOWLEVEL_CALL,
     LP_INVALID_FLASH_LOAN_EXECUTOR_RETURN,
     LP_BORROW_ALLOWANCE_NOT_ENOUGH,
+    VL_COLLATERAL_CANNOT_COVER_NEW_BORROW,
   } = ProtocolErrors;
 
   before(async () => {
@@ -290,6 +291,73 @@ makeSuite('LendingPool FlashLoan function', (testEnv: TestEnv) => {
     const callerDebt = await wethDebtToken.balanceOf(caller.address);
 
     expect(callerDebt.toString()).to.be.equal('800000000000000000', 'Invalid user debt');
+  });
+
+  it('Caller deposits 1000 DAI as collateral, Takes WETH flashloan with mode = 2, does not return the funds. A variable loan for caller is created, flashloan(0.1eth) for users[3]', async () => {
+    const { dai, pool, weth, users, helpersContract } = testEnv;
+
+    const caller = users[3];
+
+    await dai.connect(caller.signer).mint(await convertToCurrencyDecimals(dai.address, '1000'));
+
+    await dai.connect(caller.signer).approve(pool.address, APPROVAL_AMOUNT_LENDING_POOL);
+
+    const amountToDeposit = await convertToCurrencyDecimals(dai.address, '1000');
+
+    await pool.connect(caller.signer).deposit(dai.address, amountToDeposit, caller.address, '0');
+
+    await _mockFlashLoanReceiver.setFailExecutionTransfer(true);
+
+    await pool
+      .connect(caller.signer)
+      .flashLoan(
+        _mockFlashLoanReceiver.address,
+        [weth.address],
+        [ethers.utils.parseEther('0.1')],
+        [2],
+        caller.address,
+        '0x10',
+        '0'
+      );
+    const { variableDebtTokenAddress } = await helpersContract.getReserveTokensAddresses(
+      weth.address
+    );
+
+    const wethDebtToken = await getVariableDebtToken(variableDebtTokenAddress);
+
+    const callerDebt = await wethDebtToken.balanceOf(caller.address);
+
+    expect(callerDebt.toString()).to.be.equal('100000000000000000', 'Invalid user debt');
+  });
+
+  it('Caller deposits 0.1 DAI as collateral, Takes WETH flashloan with mode = 2, does not return the funds. deposit 0.1 dai flashloan(0.05 weth) for users[4], revereted with VL_COLLATERAL_CANNOT_COVER_NEW_BORROW', async () => {
+    const { dai, pool, weth, users, helpersContract } = testEnv;
+
+    const caller = users[4];
+
+    await dai.connect(caller.signer).mint(await convertToCurrencyDecimals(dai.address, '0.1'));
+
+    await dai.connect(caller.signer).approve(pool.address, APPROVAL_AMOUNT_LENDING_POOL);
+
+    const amountToDeposit = await convertToCurrencyDecimals(dai.address, '0.1');
+
+    await pool.connect(caller.signer).deposit(dai.address, amountToDeposit, caller.address, '0');
+
+    await _mockFlashLoanReceiver.setFailExecutionTransfer(true);
+
+    await expect(
+      pool
+        .connect(caller.signer)
+        .flashLoan(
+          _mockFlashLoanReceiver.address,
+          [weth.address],
+          [ethers.utils.parseEther('0.05')],
+          [2],
+          caller.address,
+          '0x10',
+          '0'
+        )
+    ).to.be.revertedWith(VL_COLLATERAL_CANNOT_COVER_NEW_BORROW);
   });
 
   it('tries to take a flashloan that is bigger than the available liquidity (revert expected)', async () => {
