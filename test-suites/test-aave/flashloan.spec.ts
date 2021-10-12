@@ -330,7 +330,7 @@ makeSuite('LendingPool FlashLoan function', (testEnv: TestEnv) => {
     expect(callerDebt.toString()).to.be.equal('100000000000000000', 'Invalid user debt');
   });
 
-  it('Caller deposits 0.1 DAI as collateral, Takes WETH flashloan with mode = 2, does not return the funds. deposit 0.1 dai flashloan(0.05 weth) for users[4], revereted with VL_COLLATERAL_CANNOT_COVER_NEW_BORROW', async () => {
+  it('Caller deposits 0.1 DAI as collateral, Takes WETH flashloan with mode = 2, does not return the funds. deposit 0.1 dai && flashloan(0.05 weth) for users[4] { 0.1dai << 0.05weth}, revereted with VL_COLLATERAL_CANNOT_COVER_NEW_BORROW', async () => {
     const { dai, pool, weth, users, helpersContract } = testEnv;
 
     const caller = users[4];
