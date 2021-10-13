@@ -7,6 +7,7 @@ import { makeSuite } from './helpers/make-suite';
 import { ProtocolErrors, RateMode } from '../../helpers/types';
 import { calcExpectedVariableDebtTokenBalance } from './helpers/utils/calculations';
 import { getUserData, getReserveData } from './helpers/utils/helpers';
+import { formatEther } from '@ethersproject/units';
 
 const chai = require('chai');
 const { expect } = chai;
@@ -64,11 +65,14 @@ makeSuite('LendingPool liquidation - liquidator receiving aToken', (testEnv) => 
         .toFixed(0)
     );
 
+    console.log(`amountDAIToBorrow: ${amountDAIToBorrow}`);
+
     await pool
       .connect(borrower.signer)
       .borrow(dai.address, amountDAIToBorrow, RateMode.Variable, '0', borrower.address);
 
     const userGlobalDataAfter = await pool.getUserAccountData(borrower.address);
+    console.log(userGlobalDataAfter.currentLiquidationThreshold.toString());
 
     expect(userGlobalDataAfter.currentLiquidationThreshold.toString()).to.be.bignumber.equal(
       '8250',
@@ -93,6 +97,7 @@ makeSuite('LendingPool liquidation - liquidator receiving aToken', (testEnv) => 
     );
 
     const userGlobalData = await pool.getUserAccountData(borrower.address);
+    console.log(formatEther(userGlobalData.healthFactor).toString());
 
     expect(userGlobalData.healthFactor.toString()).to.be.bignumber.lt(
       oneEther.toString(),
