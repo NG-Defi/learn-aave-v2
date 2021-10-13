@@ -85,6 +85,20 @@ makeSuite('LendingPool liquidation - liquidator receiving aToken', (testEnv) => 
     ).to.be.revertedWith(LPCM_HEALTH_FACTOR_NOT_BELOW_THRESHOLD);
   });
 
+  // new test cases
+  it('check the default value of userGlobalData.healFactor is gt 1', async () => {
+    const { dai, users, pool, oracle } = testEnv;
+    const borrower = users[1];
+
+    const userGlobalData = await pool.getUserAccountData(borrower.address);
+    console.log(`healFactor: ${formatEther(userGlobalData.healthFactor).toString()}`);
+
+    expect(userGlobalData.healthFactor.toString()).to.be.bignumber.gt(
+      oneEther.toString(),
+      INVALID_HF
+    );
+  });
+
   it('Drop the health factor below 1', async () => {
     const { dai, users, pool, oracle } = testEnv;
     const borrower = users[1];
@@ -97,7 +111,8 @@ makeSuite('LendingPool liquidation - liquidator receiving aToken', (testEnv) => 
     );
 
     const userGlobalData = await pool.getUserAccountData(borrower.address);
-    console.log(formatEther(userGlobalData.healthFactor).toString());
+
+    console.log(`healFactor: ${formatEther(userGlobalData.healthFactor).toString()}`);
 
     expect(userGlobalData.healthFactor.toString()).to.be.bignumber.lt(
       oneEther.toString(),
