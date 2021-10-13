@@ -8,6 +8,7 @@ import { ProtocolErrors, RateMode } from '../../helpers/types';
 import { calcExpectedStableDebtTokenBalance } from './helpers/utils/calculations';
 import { getUserData } from './helpers/utils/helpers';
 import { CommonsConfig } from '../../markets/aave/commons';
+import { formatEther } from '@ethersproject/units';
 
 import { parseEther } from 'ethers/lib/utils';
 
@@ -113,6 +114,9 @@ makeSuite('LendingPool liquidation - liquidator receiving the underlying asset',
     );
 
     const userGlobalData = await pool.getUserAccountData(borrower.address);
+    console.log(
+      `userGlobalData.healthFactor: ${formatEther(userGlobalData.healthFactor).toString()}`
+    );
 
     expect(userGlobalData.healthFactor.toString()).to.be.bignumber.lt(
       oneEther.toFixed(0),
