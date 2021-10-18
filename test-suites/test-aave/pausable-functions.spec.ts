@@ -428,7 +428,7 @@ makeSuite('Pausable Pool', (testEnv: TestEnv) => {
       .be.reverted;
   });
 
-  it('setUserUseReserveAsCollateral', async () => {
+  it('setUserUseReserveAsCollateral, poolPause = true', async () => {
     const { pool, weth, users, configurator } = testEnv;
     const user = users[1];
 
@@ -446,5 +446,21 @@ makeSuite('Pausable Pool', (testEnv: TestEnv) => {
 
     // Unpause pool
     await configurator.connect(users[1].signer).setPoolPause(false);
+  });
+
+  it('setUserUseReserveAsCollateral, poolPause = false', async () => {
+    const { pool, weth, users, configurator } = testEnv;
+    const user = users[1];
+
+    const amountWETHToDeposit = parseEther('1');
+    await weth.connect(user.signer).mint(amountWETHToDeposit);
+    await weth.connect(user.signer).approve(pool.address, APPROVAL_AMOUNT_LENDING_POOL);
+    await pool.connect(user.signer).deposit(weth.address, amountWETHToDeposit, user.address, '0');
+
+    // Pause pool
+    await configurator.connect(users[1].signer).setPoolPause(false);
+
+    await expect(pool.connect(user.signer).setUserUseReserveAsCollateral(weth.address, false)).to.be
+      .ok;
   });
 });
