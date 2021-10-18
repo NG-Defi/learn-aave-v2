@@ -7,6 +7,7 @@ import { rateStrategyStableOne } from '../../markets/aave/rateStrategies';
 
 import { strategyDAI } from '../../markets/aave/reservesConfigs';
 import { AToken, DefaultReserveInterestRateStrategy, MintableERC20 } from '../../types';
+import { WETH9Mocked } from '../../types/WETH9Mocked';
 import BigNumber from 'bignumber.js';
 import './helpers/utils/math';
 
@@ -16,10 +17,14 @@ makeSuite('Interest rate strategy tests', (testEnv: TestEnv) => {
   let strategyInstance: DefaultReserveInterestRateStrategy;
   let dai: MintableERC20;
   let aDai: AToken;
+  let weth: WETH9Mocked;
+  let aWeth: AToken;
 
   before(async () => {
     dai = testEnv.dai;
     aDai = testEnv.aDai;
+    weth = testEnv.weth;
+    aWeth = testEnv.aWETH;
 
     const { addressesProvider } = testEnv;
 
@@ -42,16 +47,9 @@ makeSuite('Interest rate strategy tests', (testEnv: TestEnv) => {
       0: currentLiquidityRate,
       1: currentStableBorrowRate,
       2: currentVariableBorrowRate,
-    } = await strategyInstance['calculateInterestRates(address,address,uint256,uint256,uint256,uint256,uint256,uint256)'](
-      dai.address,
-      aDai.address,
-      0,
-      0,
-      0,
-      0,
-      0,
-      strategyDAI.reserveFactor
-    );
+    } = await strategyInstance[
+      'calculateInterestRates(address,address,uint256,uint256,uint256,uint256,uint256,uint256)'
+    ](dai.address, aDai.address, 0, 0, 0, 0, 0, strategyDAI.reserveFactor);
 
     expect(currentLiquidityRate.toString()).to.be.equal('0', 'Invalid liquidity rate');
     expect(currentStableBorrowRate.toString()).to.be.equal(
@@ -69,7 +67,9 @@ makeSuite('Interest rate strategy tests', (testEnv: TestEnv) => {
       0: currentLiquidityRate,
       1: currentStableBorrowRate,
       2: currentVariableBorrowRate,
-    } = await strategyInstance['calculateInterestRates(address,address,uint256,uint256,uint256,uint256,uint256,uint256)'](
+    } = await strategyInstance[
+      'calculateInterestRates(address,address,uint256,uint256,uint256,uint256,uint256,uint256)'
+    ](
       dai.address,
       aDai.address,
       '200000000000000000',
@@ -108,7 +108,9 @@ makeSuite('Interest rate strategy tests', (testEnv: TestEnv) => {
       0: currentLiquidityRate,
       1: currentStableBorrowRate,
       2: currentVariableBorrowRate,
-    } = await strategyInstance['calculateInterestRates(address,address,uint256,uint256,uint256,uint256,uint256,uint256)'](
+    } = await strategyInstance[
+      'calculateInterestRates(address,address,uint256,uint256,uint256,uint256,uint256,uint256)'
+    ](
       dai.address,
       aDai.address,
       '0',
@@ -150,7 +152,9 @@ makeSuite('Interest rate strategy tests', (testEnv: TestEnv) => {
       0: currentLiquidityRate,
       1: currentStableBorrowRate,
       2: currentVariableBorrowRate,
-    } = await strategyInstance['calculateInterestRates(address,address,uint256,uint256,uint256,uint256,uint256,uint256)'](
+    } = await strategyInstance[
+      'calculateInterestRates(address,address,uint256,uint256,uint256,uint256,uint256,uint256)'
+    ](
       dai.address,
       aDai.address,
       '0',
