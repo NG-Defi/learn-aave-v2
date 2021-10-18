@@ -242,6 +242,33 @@ makeSuite('Pausable Pool', (testEnv: TestEnv) => {
     await configurator.connect(users[1].signer).setPoolPause(false);
   });
 
+  it('Flash loan, when poolPause = false;', async () => {
+    const { dai, pool, weth, users, configurator } = testEnv;
+
+    const caller = users[3];
+
+    const flashAmount = parseEther('0.8');
+
+    await _mockFlashLoanReceiver.setFailExecutionTransfer(true);
+
+    // Pause pool
+    await configurator.connect(users[1].signer).setPoolPause(false);
+
+    await expect(
+      pool
+        .connect(caller.signer)
+        .flashLoan(
+          _mockFlashLoanReceiver.address,
+          [weth.address],
+          [flashAmount],
+          [1],
+          caller.address,
+          '0x10',
+          '0'
+        )
+    ).to.be.reverted;
+  });
+
   it('Liquidation call', async () => {
     const { users, pool, usdc, oracle, weth, configurator, helpersContract } = testEnv;
     const depositor = users[3];
