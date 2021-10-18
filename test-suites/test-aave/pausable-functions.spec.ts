@@ -404,7 +404,7 @@ makeSuite('Pausable Pool', (testEnv: TestEnv) => {
       .be.ok;
   });
 
-  it('RebalanceStableBorrowRate', async () => {
+  it('RebalanceStableBorrowRate, when poolPause = true', async () => {
     const { pool, dai, users, configurator } = testEnv;
     const user = users[1];
     // Pause pool
@@ -416,6 +416,16 @@ makeSuite('Pausable Pool', (testEnv: TestEnv) => {
 
     // Unpause pool
     await configurator.connect(users[1].signer).setPoolPause(false);
+  });
+
+  it('RebalanceStableBorrowRate, when poolPause = false', async () => {
+    const { pool, dai, users, configurator } = testEnv;
+    const user = users[1];
+    // Pause pool
+    await configurator.connect(users[1].signer).setPoolPause(false);
+
+    await expect(pool.connect(user.signer).rebalanceStableBorrowRate(dai.address, user.address)).to
+      .be.reverted;
   });
 
   it('setUserUseReserveAsCollateral', async () => {
