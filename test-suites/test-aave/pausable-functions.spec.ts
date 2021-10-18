@@ -111,7 +111,7 @@ makeSuite('Pausable Pool', (testEnv: TestEnv) => {
     ).to.be.ok;
   });
 
-  it('Withdraw', async () => {
+  it('Withdraw, when poolPause = true', async () => {
     const { users, pool, dai, aDai, configurator } = testEnv;
 
     const amountDAItoDeposit = await convertToCurrencyDecimals(dai.address, '1000');
@@ -134,6 +134,25 @@ makeSuite('Pausable Pool', (testEnv: TestEnv) => {
 
     // Configurator unpauses the pool
     await configurator.connect(users[1].signer).setPoolPause(false);
+  });
+
+  it('Withdraw, when poolPause = false', async () => {
+    const { users, pool, dai, aDai, configurator } = testEnv;
+
+    const amountDAItoDeposit = await convertToCurrencyDecimals(dai.address, '1000');
+
+    await dai.connect(users[0].signer).mint(amountDAItoDeposit);
+
+    // user 0 deposits 1000 DAI
+    await dai.connect(users[0].signer).approve(pool.address, APPROVAL_AMOUNT_LENDING_POOL);
+    await pool
+      .connect(users[0].signer)
+      .deposit(dai.address, amountDAItoDeposit, users[0].address, '0');
+
+    // user tries to burn
+    await expect(
+      pool.connect(users[0].signer).withdraw(dai.address, amountDAItoDeposit, users[0].address)
+    ).to.be.ok;
   });
 
   it('Borrow', async () => {
