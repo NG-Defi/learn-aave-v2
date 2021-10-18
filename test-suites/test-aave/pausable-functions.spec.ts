@@ -12,11 +12,8 @@ const { expect } = require('chai');
 makeSuite('Pausable Pool', (testEnv: TestEnv) => {
   let _mockFlashLoanReceiver = {} as MockFlashLoanReceiver;
 
-  const {
-    LP_IS_PAUSED,
-    INVALID_FROM_BALANCE_AFTER_TRANSFER,
-    INVALID_TO_BALANCE_AFTER_TRANSFER,
-  } = ProtocolErrors;
+  const { LP_IS_PAUSED, INVALID_FROM_BALANCE_AFTER_TRANSFER, INVALID_TO_BALANCE_AFTER_TRANSFER } =
+    ProtocolErrors;
 
   before(async () => {
     _mockFlashLoanReceiver = await getMockFlashLoanReceiver();
@@ -77,7 +74,7 @@ makeSuite('Pausable Pool', (testEnv: TestEnv) => {
     );
   });
 
-  it('Deposit', async () => {
+  it('Deposit when poolPause = true', async () => {
     const { users, pool, dai, aDai, configurator } = testEnv;
 
     const amountDAItoDeposit = await convertToCurrencyDecimals(dai.address, '1000');
@@ -95,6 +92,23 @@ makeSuite('Pausable Pool', (testEnv: TestEnv) => {
 
     // Configurator unpauses the pool
     await configurator.connect(users[1].signer).setPoolPause(false);
+  });
+
+  it('Deposit when poolPause = false', async () => {
+    const { users, pool, dai, aDai, configurator } = testEnv;
+
+    const amountDAItoDeposit = await convertToCurrencyDecimals(dai.address, '1000');
+
+    await dai.connect(users[0].signer).mint(amountDAItoDeposit);
+
+    // user 0 deposits 1000 DAI
+    await dai.connect(users[0].signer).approve(pool.address, APPROVAL_AMOUNT_LENDING_POOL);
+
+    // Configurator pauses the pool
+    await configurator.connect(users[1].signer).setPoolPause(false);
+    await expect(
+      pool.connect(users[0].signer).deposit(dai.address, amountDAItoDeposit, users[0].address, '0')
+    ).to.be.ok;
   });
 
   it('Withdraw', async () => {
