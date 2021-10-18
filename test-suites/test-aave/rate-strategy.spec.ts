@@ -5,11 +5,12 @@ import { APPROVAL_AMOUNT_LENDING_POOL, PERCENTAGE_FACTOR, RAY } from '../../help
 
 import { rateStrategyStableOne } from '../../markets/aave/rateStrategies';
 
-import { strategyDAI } from '../../markets/aave/reservesConfigs';
+import { strategyDAI, strategyWETH } from '../../markets/aave/reservesConfigs';
 import { AToken, DefaultReserveInterestRateStrategy, MintableERC20 } from '../../types';
 import { WETH9Mocked } from '../../types/WETH9Mocked';
 import BigNumber from 'bignumber.js';
 import './helpers/utils/math';
+import { formatEther } from '@ethersproject/units';
 
 const { expect } = require('chai');
 
@@ -42,7 +43,7 @@ makeSuite('Interest rate strategy tests', (testEnv: TestEnv) => {
     );
   });
 
-  it('Checks rates at 0% utilization rate, empty reserve', async () => {
+  it('Checks rates at 0% utilization rate, empty reserve, test for DAI', async () => {
     const {
       0: currentLiquidityRate,
       1: currentStableBorrowRate,
@@ -62,7 +63,27 @@ makeSuite('Interest rate strategy tests', (testEnv: TestEnv) => {
     );
   });
 
-  it('Checks rates at 80% utilization rate', async () => {
+  it('Checks rates at 0% utilization rate, empty reserve, test for WETH', async () => {
+    const {
+      0: currentLiquidityRate,
+      1: currentStableBorrowRate,
+      2: currentVariableBorrowRate,
+    } = await strategyInstance[
+      'calculateInterestRates(address,address,uint256,uint256,uint256,uint256,uint256,uint256)'
+    ](weth.address, aWeth.address, 0, 0, 0, 0, 0, strategyWETH.reserveFactor);
+
+    expect(currentLiquidityRate.toString()).to.be.equal('0', 'Invalid liquidity rate');
+    expect(currentStableBorrowRate.toString()).to.be.equal(
+      new BigNumber(0.03).times(RAY).toFixed(0),
+      'Invalid stable rate'
+    );
+    expect(currentVariableBorrowRate.toString()).to.be.equal(
+      rateStrategyStableOne.baseVariableBorrowRate,
+      'Invalid variable rate'
+    );
+  });
+
+  it('Checks rates at 80% utilization rate, for DAI', async () => {
     const {
       0: currentLiquidityRate,
       1: currentStableBorrowRate,
@@ -82,6 +103,12 @@ makeSuite('Interest rate strategy tests', (testEnv: TestEnv) => {
 
     const expectedVariableRate = new BigNumber(rateStrategyStableOne.baseVariableBorrowRate).plus(
       rateStrategyStableOne.variableRateSlope1
+    );
+
+    console.log(`currentLiquidityRate in Percentage: ${formatEther(currentLiquidityRate)}`);
+    console.log(`currentStableBorrowRate in Percentage: ${formatEther(currentStableBorrowRate)}`);
+    console.log(
+      `currentVariableBorrowRate in Percentage: ${formatEther(currentVariableBorrowRate)}`
     );
 
     expect(currentLiquidityRate.toString()).to.be.equal(
@@ -119,6 +146,12 @@ makeSuite('Interest rate strategy tests', (testEnv: TestEnv) => {
       '800000000000000000',
       '0',
       strategyDAI.reserveFactor
+    );
+
+    console.log(`currentLiquidityRate in Percentage: ${formatEther(currentLiquidityRate)}`);
+    console.log(`currentStableBorrowRate in Percentage : ${formatEther(currentStableBorrowRate)}`);
+    console.log(
+      `currentVariableBorrowRate in Percentage: ${formatEther(currentVariableBorrowRate)}`
     );
 
     const expectedVariableRate = new BigNumber(rateStrategyStableOne.baseVariableBorrowRate)
