@@ -97,6 +97,10 @@ makeSuite('Uniswap adapters', (testEnv: TestEnv) => {
         const usdcPrice = await oracle.getAssetPrice(usdc.address);
         const usdPrice = await oracle.getAssetPrice(USD_ADDRESS);
 
+        console.log(`wethPrice: ${formatEther(aavePrice)}`);
+        console.log(`daiPrice: ${formatEther(usdcPrice)}`);
+        console.log(`usdPrice: ${formatEther(usdPrice)}`);
+
         const expectedUSDCAmount = await convertToCurrencyDecimals(
           usdc.address,
           new BigNumber(amountToSwap.toString()).div(usdcPrice.toString()).toFixed(0)
@@ -118,6 +122,10 @@ makeSuite('Uniswap adapters', (testEnv: TestEnv) => {
           .div('1000000') // usdc 6 decimals
           .mul(usdPrice)
           .div(parseEther('1'));
+
+        console.log(`outPerInPrice: ${formatEther(outPerInPrice)}`);
+        console.log(`aaveUsdValue: ${formatEther(aaveUsdValue)}`);
+        console.log(`usdcUsdValue: ${formatEther(usdcUsdValue)}`);
 
         await mockUniswapRouter.setAmountOut(
           amountToSwap,
@@ -151,6 +159,10 @@ makeSuite('Uniswap adapters', (testEnv: TestEnv) => {
         const daiPrice = await oracle.getAssetPrice(dai.address);
         const usdPrice = await oracle.getAssetPrice(USD_ADDRESS);
 
+        console.log(`wethPrice: ${formatEther(wethPrice)}`);
+        console.log(`daiPrice: ${formatEther(daiPrice)}`);
+        console.log(`usdPrice: ${formatEther(usdPrice)}`);
+
         const amountOut = await convertToCurrencyDecimals(
           dai.address,
           new BigNumber(amountIn.toString()).div(daiPrice.toString()).toFixed(0)
@@ -171,6 +183,11 @@ makeSuite('Uniswap adapters', (testEnv: TestEnv) => {
           .div(parseEther('1'))
           .mul(usdPrice)
           .div(parseEther('1'));
+
+        console.log(`amountOut: ${formatEther(amountOut)}`);
+        console.log(`inPerOutPrice: ${formatEther(inPerOutPrice)}`);
+        console.log(`ethUsdValue: ${formatEther(ethUsdValue)}`);
+        console.log(`daiUsdValue: ${formatEther(daiUsdValue)}`);
 
         await mockUniswapRouter.setAmountIn(amountOut, weth.address, dai.address, amountIn);
 
