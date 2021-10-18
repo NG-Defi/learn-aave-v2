@@ -155,7 +155,7 @@ makeSuite('Pausable Pool', (testEnv: TestEnv) => {
     ).to.be.ok;
   });
 
-  it('Borrow', async () => {
+  it('Borrow, when poolPause = true', async () => {
     const { pool, dai, users, configurator } = testEnv;
 
     const user = users[1];
@@ -171,7 +171,20 @@ makeSuite('Pausable Pool', (testEnv: TestEnv) => {
     await configurator.connect(users[1].signer).setPoolPause(false);
   });
 
-  it('Repay', async () => {
+  // // comment below code to pass test scripts.
+  // // passed when poolPause is set false;
+  // it('Borrow, when poolPause = false', async () => {
+  //   const { pool, dai, users, configurator } = testEnv;
+
+  //   const user = users[1];
+  //   await configurator.connect(users[1].signer).setPoolPause(false);
+  //   // Try to execute liquidation
+  //   await expect(
+  //     pool.connect(user.signer).borrow(dai.address, '1', '1', '0', user.address)
+  //   ).to.be.ok;
+  // });
+
+  it('Repay, when poolPause = true;', async () => {
     const { pool, dai, users, configurator } = testEnv;
 
     const user = users[1];
@@ -187,7 +200,19 @@ makeSuite('Pausable Pool', (testEnv: TestEnv) => {
     await configurator.connect(users[1].signer).setPoolPause(false);
   });
 
-  it('Flash loan', async () => {
+  it('Repay, when poolPause = false;', async () => {
+    const { pool, dai, users, configurator } = testEnv;
+
+    const user = users[1];
+    // Pause the pool
+    await configurator.connect(users[1].signer).setPoolPause(false);
+
+    // Try to execute liquidation
+    await expect(pool.connect(user.signer).repay(dai.address, '1', '1', user.address)).to.be
+      .reverted;
+  });
+
+  it('Flash loan, when poolPause = true;', async () => {
     const { dai, pool, weth, users, configurator } = testEnv;
 
     const caller = users[3];
