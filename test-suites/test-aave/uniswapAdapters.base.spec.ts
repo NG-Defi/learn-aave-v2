@@ -6,6 +6,7 @@ import BigNumber from 'bignumber.js';
 import { evmRevert, evmSnapshot } from '../../helpers/misc-utils';
 import { ethers } from 'ethers';
 import { USD_ADDRESS } from '../../helpers/constants';
+import { formatEther } from 'ethers/lib/utils';
 const { parseEther } = ethers.utils;
 
 const { expect } = require('chai');
@@ -39,6 +40,10 @@ makeSuite('Uniswap adapters', (testEnv: TestEnv) => {
         const daiPrice = await oracle.getAssetPrice(dai.address);
         const usdPrice = await oracle.getAssetPrice(USD_ADDRESS);
 
+        console.log(`wethPrice: ${formatEther(wethPrice)}`);
+        console.log(`daiPrice: ${formatEther(daiPrice)}`);
+        console.log(`usdPrice: ${formatEther(usdPrice)}`);
+
         const expectedDaiAmount = await convertToCurrencyDecimals(
           dai.address,
           new BigNumber(amountToSwap.toString()).div(daiPrice.toString()).toFixed(0)
@@ -58,6 +63,10 @@ makeSuite('Uniswap adapters', (testEnv: TestEnv) => {
           .div(parseEther('1'))
           .mul(usdPrice)
           .div(parseEther('1'));
+
+        console.log(`outPerInPrice: ${formatEther(outPerInPrice)}`);
+        console.log(`ethUsdValue: ${formatEther(ethUsdValue)}`);
+        console.log(`daiUsdValue: ${formatEther(daiUsdValue)}`);
 
         await mockUniswapRouter.setAmountOut(
           amountToSwap,
