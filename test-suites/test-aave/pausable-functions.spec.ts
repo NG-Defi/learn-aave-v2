@@ -350,7 +350,7 @@ makeSuite('Pausable Pool', (testEnv: TestEnv) => {
     await configurator.connect(users[1].signer).setPoolPause(false);
   });
 
-  it('SwapBorrowRateMode', async () => {
+  it('SwapBorrowRateMode, when poolPause = true', async () => {
     const { pool, weth, dai, usdc, users, configurator } = testEnv;
     const user = users[1];
     const amountWETHToDeposit = parseEther('10');
@@ -377,6 +377,31 @@ makeSuite('Pausable Pool', (testEnv: TestEnv) => {
 
     // Unpause pool
     await configurator.connect(users[1].signer).setPoolPause(false);
+  });
+
+  it('SwapBorrowRateMode, when poolPause = false', async () => {
+    const { pool, weth, dai, usdc, users, configurator } = testEnv;
+    const user = users[1];
+    const amountWETHToDeposit = parseEther('10');
+    const amountDAIToDeposit = parseEther('120');
+    const amountToBorrow = parseUnits('65', 6);
+
+    await weth.connect(user.signer).mint(amountWETHToDeposit);
+    await weth.connect(user.signer).approve(pool.address, APPROVAL_AMOUNT_LENDING_POOL);
+    await pool.connect(user.signer).deposit(weth.address, amountWETHToDeposit, user.address, '0');
+
+    await dai.connect(user.signer).mint(amountDAIToDeposit);
+    await dai.connect(user.signer).approve(pool.address, APPROVAL_AMOUNT_LENDING_POOL);
+    await pool.connect(user.signer).deposit(dai.address, amountDAIToDeposit, user.address, '0');
+
+    await pool.connect(user.signer).borrow(usdc.address, amountToBorrow, 2, 0, user.address);
+
+    // Pause pool
+    await configurator.connect(users[1].signer).setPoolPause(false);
+
+    // Try to repay
+    await expect(pool.connect(user.signer).swapBorrowRateMode(usdc.address, RateMode.Variable)).to
+      .be.ok;
   });
 
   it('RebalanceStableBorrowRate', async () => {
