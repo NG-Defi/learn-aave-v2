@@ -13,6 +13,7 @@ import { ProtocolErrors, RateMode } from '../../helpers/types';
 import { APPROVAL_AMOUNT_LENDING_POOL, MAX_UINT_AMOUNT, oneEther } from '../../helpers/constants';
 import { getUserData } from './helpers/utils/helpers';
 import { calcExpectedStableDebtTokenBalance } from './helpers/utils/calculations';
+import { constants } from 'ethers';
 const { expect } = require('chai');
 
 makeSuite('Uniswap adapters', (testEnv: TestEnv) => {
@@ -377,9 +378,34 @@ makeSuite('Uniswap adapters', (testEnv: TestEnv) => {
 
       // new test cases
       it('check flashLiquidationAdapter.MAX_SLIPPAGE_PERCENT() is equal to [3000]', async () => {
-        const EXP_VALUE = 9;
+        const EXP_VALUE = 3000;
         const { flashLiquidationAdapter } = testEnv;
         expect(await flashLiquidationAdapter.MAX_SLIPPAGE_PERCENT()).to.equal(EXP_VALUE);
+      });
+
+      // new test cases
+      it('check flashLiquidationAdapter.USD_ADDRESS() is equal to [0x10F7Fc1F91Ba351f9C629c5947AD69bD03C05b96]', async () => {
+        const EXP_VALUE = '0x10F7Fc1F91Ba351f9C629c5947AD69bD03C05b96';
+        const { flashLiquidationAdapter } = testEnv;
+        expect(await flashLiquidationAdapter.USD_ADDRESS()).to.equal(EXP_VALUE);
+      });
+
+      // new test cases
+      it('check flashLiquidationAdapter.WETH_ADDRESS() is equal to [weth.address]', async () => {
+        const { flashLiquidationAdapter, weth, oracle } = testEnv;
+        const EXP_VALUE = weth.address;
+        expect(await flashLiquidationAdapter.WETH_ADDRESS()).to.be.equal(EXP_VALUE);
+      });
+
+      it('check flashLiquidationAdapter.WETH_ADDRESS() is equal to [weth.address]', async () => {
+        const { flashLiquidationAdapter, weth, oracle } = testEnv;
+        const EXP_VALUE = oracle.address;
+        expect(await flashLiquidationAdapter.ORACLE()).to.be.equal(EXP_VALUE);
+      });
+
+      it('check flashLiquidationAdapter.UNISWAP_ROUTER() is not equal to [AddressZero]', async () => {
+        const { flashLiquidationAdapter } = testEnv;
+        expect(await flashLiquidationAdapter.ORACLE()).to.not.be.equal(constants.AddressZero);
       });
     });
 
