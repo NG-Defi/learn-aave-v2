@@ -469,6 +469,56 @@ makeSuite('Uniswap adapters', (testEnv: TestEnv) => {
         console.log(`variableBorrowIndex: ${reserveData.variableBorrowIndex}`);
         console.log(`lastUpdateTimestamp: ${reserveData.lastUpdateTimestamp}`);
       });
+
+      it('check userReserveData = getUserData(borrower.address), and print its result', async () => {
+        const { dai, weth, users, pool, oracle, helpersContract, flashLiquidationAdapter } =
+          testEnv;
+        const borrower = users[1];
+        const userReserveData = await getUserData(
+          pool,
+          helpersContract,
+          dai.address,
+          borrower.address
+        );
+
+        console.log(`scaledATokenBalance: ${userReserveData.scaledATokenBalance}`);
+        console.log(`currentATokenBalance: ${userReserveData.currentATokenBalance}`);
+        console.log(`currentStableDebt: ${userReserveData.currentStableDebt}`);
+        console.log(`currentVariableDebt: ${userReserveData.currentVariableDebt}`);
+        console.log(`principalStableDebt: ${userReserveData.principalStableDebt}`);
+
+        console.log(`scaledVariableDebt: ${userReserveData.scaledVariableDebt}`);
+        console.log(`stableBorrowRate: ${userReserveData.stableBorrowRate}`);
+        console.log(`liquidityRate: ${userReserveData.liquidityRate}`);
+        console.log(`usageAsCollateralEnabled: ${userReserveData.usageAsCollateralEnabled}`);
+        console.log(`stableRateLastUpdated: ${userReserveData.stableRateLastUpdated}`);
+        console.log(`walletBalance: ${userReserveData.walletBalance}`);
+      });
+
+      it('check userReserveData = getUserData(liquidator.address), and print its result', async () => {
+        const { dai, weth, users, pool, oracle, helpersContract, flashLiquidationAdapter } =
+          testEnv;
+        const liquidator = users[3];
+        const userReserveData = await getUserData(
+          pool,
+          helpersContract,
+          dai.address,
+          liquidator.address
+        );
+
+        console.log(`scaledATokenBalance: ${userReserveData.scaledATokenBalance}`);
+        console.log(`currentATokenBalance: ${userReserveData.currentATokenBalance}`);
+        console.log(`currentStableDebt: ${userReserveData.currentStableDebt}`);
+        console.log(`currentVariableDebt: ${userReserveData.currentVariableDebt}`);
+        console.log(`principalStableDebt: ${userReserveData.principalStableDebt}`);
+
+        console.log(`scaledVariableDebt: ${userReserveData.scaledVariableDebt}`);
+        console.log(`stableBorrowRate: ${userReserveData.stableBorrowRate}`);
+        console.log(`liquidityRate: ${userReserveData.liquidityRate}`);
+        console.log(`usageAsCollateralEnabled: ${userReserveData.usageAsCollateralEnabled}`);
+        console.log(`stableRateLastUpdated: ${userReserveData.stableRateLastUpdated}`);
+        console.log(`walletBalance: ${userReserveData.walletBalance}`);
+      });
     });
 
     describe('executeOperation: succesfully liquidateCall with same asset via Flash Loan, but no swap needed', () => {
