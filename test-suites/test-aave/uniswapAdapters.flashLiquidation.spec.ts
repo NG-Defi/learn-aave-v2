@@ -470,6 +470,7 @@ makeSuite('Uniswap adapters', (testEnv: TestEnv) => {
         console.log(`lastUpdateTimestamp: ${reserveData.lastUpdateTimestamp}`);
       });
 
+      // new test case
       it('check userReserveData = getUserData(borrower.address), and print its result', async () => {
         const { dai, weth, users, pool, oracle, helpersContract, flashLiquidationAdapter } =
           testEnv;
@@ -495,6 +496,7 @@ makeSuite('Uniswap adapters', (testEnv: TestEnv) => {
         console.log(`walletBalance: ${userReserveData.walletBalance}`);
       });
 
+      // new test case
       it('check userReserveData = getUserData(liquidator.address), and print its result', async () => {
         const { dai, weth, users, pool, oracle, helpersContract, flashLiquidationAdapter } =
           testEnv;
@@ -518,6 +520,88 @@ makeSuite('Uniswap adapters', (testEnv: TestEnv) => {
         console.log(`usageAsCollateralEnabled: ${userReserveData.usageAsCollateralEnabled}`);
         console.log(`stableRateLastUpdated: ${userReserveData.stableRateLastUpdated}`);
         console.log(`walletBalance: ${userReserveData.walletBalance}`);
+      });
+
+      it('check helpersContract.getReserveConfigurationData(dai.address), and print its all results', async () => {
+        const { dai, weth, users, pool, oracle, helpersContract, flashLiquidationAdapter } =
+          testEnv;
+        const reserveConfigurationData = await helpersContract.getReserveConfigurationData(
+          dai.address
+        );
+        console.log(`decimals: ${reserveConfigurationData.decimals}`);
+        console.log(`ltv: ${reserveConfigurationData.ltv}`);
+        console.log(`liquidationThreshold: ${reserveConfigurationData.liquidationThreshold}`);
+        console.log(`liquidationBonus: ${reserveConfigurationData.liquidationBonus}`);
+        console.log(`reserveFactor: ${reserveConfigurationData.reserveFactor}`);
+        console.log(
+          `usageAsCollateralEnabled: ${reserveConfigurationData.usageAsCollateralEnabled}`
+        );
+        console.log(`borrowingEnabled: ${reserveConfigurationData.borrowingEnabled}`);
+        console.log(`stableBorrowRateEnabled: ${reserveConfigurationData.stableBorrowRateEnabled}`);
+        console.log(`isActive: ${reserveConfigurationData.isActive}`);
+        console.log(`isFrozen: ${reserveConfigurationData.isFrozen}`);
+      });
+
+      it('check helpersContract.getReserveConfigurationData(weth.address), and print its all results', async () => {
+        const { dai, weth, users, pool, oracle, helpersContract, flashLiquidationAdapter } =
+          testEnv;
+        const reserveConfigurationData = await helpersContract.getReserveConfigurationData(
+          weth.address
+        );
+        console.log(`decimals: ${reserveConfigurationData.decimals}`);
+        console.log(`ltv: ${reserveConfigurationData.ltv}`);
+        console.log(`liquidationThreshold: ${reserveConfigurationData.liquidationThreshold}`);
+        console.log(`liquidationBonus: ${reserveConfigurationData.liquidationBonus}`);
+        console.log(`reserveFactor: ${reserveConfigurationData.reserveFactor}`);
+        console.log(
+          `usageAsCollateralEnabled: ${reserveConfigurationData.usageAsCollateralEnabled}`
+        );
+        console.log(`borrowingEnabled: ${reserveConfigurationData.borrowingEnabled}`);
+        console.log(`stableBorrowRateEnabled: ${reserveConfigurationData.stableBorrowRateEnabled}`);
+        console.log(`isActive: ${reserveConfigurationData.isActive}`);
+        console.log(`isFrozen: ${reserveConfigurationData.isFrozen}`);
+      });
+
+      it('check helpersContract.getAllATokens(), check its allTokens[aDai].tokenAddress = testEnv.aDai.address', async () => {
+        const {
+          dai,
+          weth,
+          aDai,
+          aWETH,
+          users,
+          pool,
+          oracle,
+          helpersContract,
+          flashLiquidationAdapter,
+        } = testEnv;
+
+        const allTokens = await testEnv.helpersContract.getAllATokens();
+        const aDaiAddress = allTokens.find((aToken) => aToken.symbol === 'aDAI')?.tokenAddress;
+        const aWEthAddress = allTokens.find((aToken) => aToken.symbol === 'aWETH')?.tokenAddress;
+
+        expect(aDaiAddress).to.be.equal(await aDai.address);
+        expect(aWEthAddress).to.be.equal(await aWETH.address);
+      });
+
+      it('check helpersContract.getAllATokens(), check its allTokens[aDai].symbol = testEnv.aDai.symbol', async () => {
+        const {
+          dai,
+          weth,
+          aDai,
+          aWETH,
+          users,
+          pool,
+          oracle,
+          helpersContract,
+          flashLiquidationAdapter,
+        } = testEnv;
+
+        const allTokens = await testEnv.helpersContract.getAllATokens();
+        const aDaiSymbol = allTokens.find((aToken) => aToken.symbol === 'aDAI')?.symbol;
+        const aWETHSymbol = allTokens.find((aToken) => aToken.symbol === 'aWETH')?.symbol;
+
+        expect(aDaiSymbol).to.be.equal(await aDai.symbol());
+        expect(aWETHSymbol).to.be.equal(await aWETH.symbol());
       });
     });
 
