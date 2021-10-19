@@ -13,13 +13,16 @@ import { ProtocolErrors, RateMode } from '../../helpers/types';
 import { APPROVAL_AMOUNT_LENDING_POOL, MAX_UINT_AMOUNT, oneEther } from '../../helpers/constants';
 import { getUserData } from './helpers/utils/helpers';
 import { calcExpectedStableDebtTokenBalance } from './helpers/utils/calculations';
-import { constants } from 'ethers';
+import { constants, utils } from 'ethers';
+import { parseEther, formatEther } from '@ethersproject/units';
+import AaveConfig from '../../markets/aave';
 const { expect } = require('chai');
 
 makeSuite('Uniswap adapters', (testEnv: TestEnv) => {
   let mockUniswapRouter: MockUniswapV2Router02;
   let evmSnapshotId: string;
   const { INVALID_HF, LP_LIQUIDATION_CALL_FAILED } = ProtocolErrors;
+  const MOCK_CHAINLINK_AGGREGATORS_PRICES = AaveConfig.Mocks.AllAssetsInitialPrices;
 
   before(async () => {
     mockUniswapRouter = await getMockUniswapRouter();
@@ -412,6 +415,24 @@ makeSuite('Uniswap adapters', (testEnv: TestEnv) => {
         );
         expect(await flashLiquidationAdapter.UNISWAP_ROUTER()).to.be.equal(
           mockUniswapRouter.address
+        );
+      });
+
+      // new test case
+      it('check oracle.getAssetPrice(weth.address), its value is equal to [MOCK_CHAINLINK_AGGREGATORS_PRICES.WETH]', async () => {
+        const { dai, weth, users, pool, oracle, helpersContract, flashLiquidationAdapter } =
+          testEnv;
+        expect(await oracle.getAssetPrice(weth.address)).to.be.equal(
+          MOCK_CHAINLINK_AGGREGATORS_PRICES.WETH
+        );
+      });
+
+      // new test case
+      it('check oracle.getAssetPrice(dai.address), its value is equal to [MOCK_CHAINLINK_AGGREGATORS_PRICES.DAI]', async () => {
+        const { dai, weth, users, pool, oracle, helpersContract, flashLiquidationAdapter } =
+          testEnv;
+        expect(await oracle.getAssetPrice(dai.address)).to.be.equal(
+          MOCK_CHAINLINK_AGGREGATORS_PRICES.DAI
         );
       });
     });
