@@ -435,6 +435,40 @@ makeSuite('Uniswap adapters', (testEnv: TestEnv) => {
           MOCK_CHAINLINK_AGGREGATORS_PRICES.DAI
         );
       });
+
+      // new test case
+      it('check helpersContract.getReserveData(dai.address), print all DAI.ReserveData', async () => {
+        const { dai, weth, users, pool, oracle, helpersContract, flashLiquidationAdapter } =
+          testEnv;
+        const daiReserveDataBefore = await helpersContract.getReserveData(dai.address);
+        console.log(`availableLiquidity: ${daiReserveDataBefore.availableLiquidity}`);
+        console.log(`totalStableDebt: ${daiReserveDataBefore.totalStableDebt}`);
+        console.log(`totalVariableDebt: ${daiReserveDataBefore.totalVariableDebt}`);
+        console.log(`liquidityRate: ${daiReserveDataBefore.liquidityRate}`);
+        console.log(`variableBorrowRate: ${daiReserveDataBefore.variableBorrowRate}`);
+        console.log(`stableBorrowRate: ${daiReserveDataBefore.stableBorrowRate}`);
+        console.log(`averageStableBorrowRate: ${daiReserveDataBefore.averageStableBorrowRate}`);
+        console.log(`liquidityIndex: ${daiReserveDataBefore.liquidityIndex}`);
+        console.log(`variableBorrowIndex: ${daiReserveDataBefore.variableBorrowIndex}`);
+        console.log(`lastUpdateTimestamp: ${daiReserveDataBefore.lastUpdateTimestamp}`);
+      });
+
+      // new test case
+      it('check helpersContract.getReserveData(weth.address), print all WETH.ReserveData', async () => {
+        const { dai, weth, users, pool, oracle, helpersContract, flashLiquidationAdapter } =
+          testEnv;
+        const reserveData = await helpersContract.getReserveData(weth.address);
+        console.log(`availableLiquidity: ${reserveData.availableLiquidity}`);
+        console.log(`totalStableDebt: ${reserveData.totalStableDebt}`);
+        console.log(`totalVariableDebt: ${reserveData.totalVariableDebt}`);
+        console.log(`liquidityRate: ${reserveData.liquidityRate}`);
+        console.log(`variableBorrowRate: ${reserveData.variableBorrowRate}`);
+        console.log(`stableBorrowRate: ${reserveData.stableBorrowRate}`);
+        console.log(`averageStableBorrowRate: ${reserveData.averageStableBorrowRate}`);
+        console.log(`liquidityIndex: ${reserveData.liquidityIndex}`);
+        console.log(`variableBorrowIndex: ${reserveData.variableBorrowIndex}`);
+        console.log(`lastUpdateTimestamp: ${reserveData.lastUpdateTimestamp}`);
+      });
     });
 
     describe('executeOperation: succesfully liquidateCall with same asset via Flash Loan, but no swap needed', () => {
