@@ -367,6 +367,20 @@ makeSuite('Uniswap adapters', (testEnv: TestEnv) => {
           'Invalid expected WETH profit'
         );
       });
+
+      // new test cases
+      it('check flashLiquidationAdapter.FLASHLOAN_PREMIUM_TOTAL() is equal to [9]', async () => {
+        const EXP_VALUE = 9;
+        const { flashLiquidationAdapter } = testEnv;
+        expect(await flashLiquidationAdapter.FLASHLOAN_PREMIUM_TOTAL()).to.equal(EXP_VALUE);
+      });
+
+      // new test cases
+      it('check flashLiquidationAdapter.MAX_SLIPPAGE_PERCENT() is equal to [3000]', async () => {
+        const EXP_VALUE = 9;
+        const { flashLiquidationAdapter } = testEnv;
+        expect(await flashLiquidationAdapter.MAX_SLIPPAGE_PERCENT()).to.equal(EXP_VALUE);
+      });
     });
 
     describe('executeOperation: succesfully liquidateCall with same asset via Flash Loan, but no swap needed', () => {
