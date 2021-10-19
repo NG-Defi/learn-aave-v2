@@ -397,7 +397,7 @@ makeSuite('Uniswap adapters', (testEnv: TestEnv) => {
         expect(await flashLiquidationAdapter.WETH_ADDRESS()).to.be.equal(EXP_VALUE);
       });
 
-      it('check flashLiquidationAdapter.WETH_ADDRESS() is equal to [weth.address]', async () => {
+      it('check flashLiquidationAdapter.oracle() is equal to [testEnv.oracle.address]', async () => {
         const { flashLiquidationAdapter, weth, oracle } = testEnv;
         const EXP_VALUE = oracle.address;
         expect(await flashLiquidationAdapter.ORACLE()).to.be.equal(EXP_VALUE);
