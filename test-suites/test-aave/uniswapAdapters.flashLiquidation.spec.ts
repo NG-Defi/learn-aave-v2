@@ -194,6 +194,8 @@ makeSuite('Uniswap adapters', (testEnv: TestEnv) => {
           mockUniswapRouter.address,
           weth.address,
         ]);
+        console.log(`mockUniswapRouter: ${mockUniswapRouter.address}`);
+        console.log(`weth: ${weth.address}`);
       });
 
       it('should revert if not valid addresses provider', async () => {
@@ -213,15 +215,8 @@ makeSuite('Uniswap adapters', (testEnv: TestEnv) => {
         await depositAndHFBelowOne();
         await increaseTime(100);
 
-        const {
-          dai,
-          weth,
-          users,
-          pool,
-          oracle,
-          helpersContract,
-          flashLiquidationAdapter,
-        } = testEnv;
+        const { dai, weth, users, pool, oracle, helpersContract, flashLiquidationAdapter } =
+          testEnv;
 
         const liquidator = users[3];
         const borrower = users[1];
@@ -460,15 +455,8 @@ makeSuite('Uniswap adapters', (testEnv: TestEnv) => {
         await depositAndHFBelowOne();
         await increaseTime(100);
 
-        const {
-          dai,
-          weth,
-          users,
-          pool,
-          oracle,
-          helpersContract,
-          flashLiquidationAdapter,
-        } = testEnv;
+        const { dai, weth, users, pool, oracle, helpersContract, flashLiquidationAdapter } =
+          testEnv;
 
         const liquidator = users[3];
         const borrower = users[1];
@@ -615,15 +603,8 @@ makeSuite('Uniswap adapters', (testEnv: TestEnv) => {
         await depositAndHFBelowOne();
         await increaseTime(100);
 
-        const {
-          dai,
-          weth,
-          users,
-          pool,
-          oracle,
-          helpersContract,
-          flashLiquidationAdapter,
-        } = testEnv;
+        const { dai, weth, users, pool, oracle, helpersContract, flashLiquidationAdapter } =
+          testEnv;
 
         const liquidator = users[3];
         const borrower = users[1];
