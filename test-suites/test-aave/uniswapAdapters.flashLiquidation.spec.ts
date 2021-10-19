@@ -405,9 +405,14 @@ makeSuite('Uniswap adapters', (testEnv: TestEnv) => {
       });
 
       // new test cases
-      it('check flashLiquidationAdapter.UNISWAP_ROUTER() is not equal to [AddressZero]', async () => {
+      it('check flashLiquidationAdapter.UNISWAP_ROUTER() is equal to [mockUniswapRouter.address]', async () => {
         const { flashLiquidationAdapter } = testEnv;
-        expect(await flashLiquidationAdapter.ORACLE()).to.not.be.equal(constants.AddressZero);
+        expect(await flashLiquidationAdapter.UNISWAP_ROUTER()).to.not.be.equal(
+          constants.AddressZero
+        );
+        expect(await flashLiquidationAdapter.UNISWAP_ROUTER()).to.be.equal(
+          mockUniswapRouter.address
+        );
       });
     });
 
