@@ -640,6 +640,37 @@ makeSuite('Uniswap adapters', (testEnv: TestEnv) => {
           await aave.symbol()
         );
       });
+
+      // new test case
+      it('check helpersContract.getAllReservesTokens(), check its getAllReservesTokens[dai].tokenAddress = dai.address', async () => {
+        const {
+          dai,
+          weth,
+          usdc,
+          aave,
+          aDai,
+          aWETH,
+          users,
+          pool,
+          oracle,
+          helpersContract,
+          flashLiquidationAdapter,
+        } = testEnv;
+
+        const allReservesTokens = await testEnv.helpersContract.getAllReservesTokens();
+        expect(
+          allReservesTokens.find((aToken) => aToken.symbol === 'DAI')?.tokenAddress
+        ).to.be.equal(await dai.address);
+        expect(
+          allReservesTokens.find((aToken) => aToken.symbol === 'WETH')?.tokenAddress
+        ).to.be.equal(await weth.address);
+        expect(
+          allReservesTokens.find((aToken) => aToken.symbol === 'USDC')?.tokenAddress
+        ).to.be.equal(await usdc.address);
+        expect(
+          allReservesTokens.find((aToken) => aToken.symbol === 'AAVE')?.tokenAddress
+        ).to.be.equal(await aave.address);
+      });
     });
 
     describe('executeOperation: succesfully liquidateCall with same asset via Flash Loan, but no swap needed', () => {
