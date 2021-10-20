@@ -671,6 +671,296 @@ makeSuite('Uniswap adapters', (testEnv: TestEnv) => {
           allReservesTokens.find((aToken) => aToken.symbol === 'AAVE')?.tokenAddress
         ).to.be.equal(await aave.address);
       });
+
+      // new test case
+      it('check helpersContract.getReserveData(dai.address), and print its all results', async () => {
+        const {
+          dai,
+          weth,
+          usdc,
+          aave,
+          users,
+          pool,
+          oracle,
+          helpersContract,
+          flashLiquidationAdapter,
+        } = testEnv;
+        const reserveData = await helpersContract.getReserveData(dai.address);
+        console.log(`availableLiquidity: ${reserveData.availableLiquidity}`);
+        console.log(`totalStableDebt: ${reserveData.totalStableDebt}`);
+        console.log(`totalVariableDebt: ${reserveData.totalVariableDebt}`);
+        console.log(`liquidityRate: ${reserveData.liquidityRate}`);
+        console.log(`variableBorrowRate: ${reserveData.variableBorrowRate}`);
+        console.log(`stableBorrowRate: ${reserveData.stableBorrowRate}`);
+        console.log(`averageStableBorrowRate: ${reserveData.averageStableBorrowRate}`);
+        console.log(`liquidityIndex: ${reserveData.liquidityIndex}`);
+        console.log(`variableBorrowIndex: ${reserveData.variableBorrowIndex}`);
+        console.log(`lastUpdateTimestamp: ${reserveData.lastUpdateTimestamp}`);
+      });
+
+      // new test case
+      it('check helpersContract.getReserveData(weth.address), and print its all results', async () => {
+        const {
+          dai,
+          weth,
+          usdc,
+          aave,
+          users,
+          pool,
+          oracle,
+          helpersContract,
+          flashLiquidationAdapter,
+        } = testEnv;
+        const reserveData = await helpersContract.getReserveData(weth.address);
+        console.log(`availableLiquidity: ${reserveData.availableLiquidity}`);
+        console.log(`totalStableDebt: ${reserveData.totalStableDebt}`);
+        console.log(`totalVariableDebt: ${reserveData.totalVariableDebt}`);
+        console.log(`liquidityRate: ${reserveData.liquidityRate}`);
+        console.log(`variableBorrowRate: ${reserveData.variableBorrowRate}`);
+        console.log(`stableBorrowRate: ${reserveData.stableBorrowRate}`);
+        console.log(`averageStableBorrowRate: ${reserveData.averageStableBorrowRate}`);
+        console.log(`liquidityIndex: ${reserveData.liquidityIndex}`);
+        console.log(`variableBorrowIndex: ${reserveData.variableBorrowIndex}`);
+        console.log(`lastUpdateTimestamp: ${reserveData.lastUpdateTimestamp}`);
+      });
+
+      // new test case
+      it('check helpersContract.getReserveData(usdc.address), and print its all results', async () => {
+        const {
+          dai,
+          weth,
+          usdc,
+          aave,
+          users,
+          pool,
+          oracle,
+          helpersContract,
+          flashLiquidationAdapter,
+        } = testEnv;
+        const reserveData = await helpersContract.getReserveData(usdc.address);
+        console.log(`availableLiquidity: ${reserveData.availableLiquidity}`);
+        console.log(`totalStableDebt: ${reserveData.totalStableDebt}`);
+        console.log(`totalVariableDebt: ${reserveData.totalVariableDebt}`);
+        console.log(`liquidityRate: ${reserveData.liquidityRate}`);
+        console.log(`variableBorrowRate: ${reserveData.variableBorrowRate}`);
+        console.log(`stableBorrowRate: ${reserveData.stableBorrowRate}`);
+        console.log(`averageStableBorrowRate: ${reserveData.averageStableBorrowRate}`);
+        console.log(`liquidityIndex: ${reserveData.liquidityIndex}`);
+        console.log(`variableBorrowIndex: ${reserveData.variableBorrowIndex}`);
+        console.log(`lastUpdateTimestamp: ${reserveData.lastUpdateTimestamp}`);
+      });
+
+      // new test case
+      it('check helpersContract.getReserveData(usdc.address), and print its all results', async () => {
+        const {
+          dai,
+          weth,
+          usdc,
+          aave,
+          users,
+          pool,
+          oracle,
+          helpersContract,
+          flashLiquidationAdapter,
+        } = testEnv;
+        const reserveData = await helpersContract.getReserveData(aave.address);
+        console.log(`availableLiquidity: ${reserveData.availableLiquidity}`);
+        console.log(`totalStableDebt: ${reserveData.totalStableDebt}`);
+        console.log(`totalVariableDebt: ${reserveData.totalVariableDebt}`);
+        console.log(`liquidityRate: ${reserveData.liquidityRate}`);
+        console.log(`variableBorrowRate: ${reserveData.variableBorrowRate}`);
+        console.log(`stableBorrowRate: ${reserveData.stableBorrowRate}`);
+        console.log(`averageStableBorrowRate: ${reserveData.averageStableBorrowRate}`);
+        console.log(`liquidityIndex: ${reserveData.liquidityIndex}`);
+        console.log(`variableBorrowIndex: ${reserveData.variableBorrowIndex}`);
+        console.log(`lastUpdateTimestamp: ${reserveData.lastUpdateTimestamp}`);
+      });
+
+      it('check getUserReserveData(dai,users[0].address)', async () => {
+        const {
+          dai,
+          weth,
+          usdc,
+          aave,
+          users,
+          pool,
+          oracle,
+          helpersContract,
+          flashLiquidationAdapter,
+        } = testEnv;
+        const userReserveData = await helpersContract.getUserReserveData(
+          dai.address,
+          users[0].address
+        );
+        console.log(`currentATokenBalance: ${userReserveData.currentATokenBalance}`);
+        console.log(`currentStableDebt: ${userReserveData.currentStableDebt}`);
+        console.log(`currentVariableDebt: ${userReserveData.currentVariableDebt}`);
+        console.log(`principalStableDebt: ${userReserveData.principalStableDebt}`);
+        console.log(`scaledVariableDebt: ${userReserveData.scaledVariableDebt}`);
+        console.log(`stableBorrowRate: ${userReserveData.stableBorrowRate}`);
+        console.log(`liquidityRate: ${userReserveData.liquidityRate}`);
+        console.log(`stableRateLastUpdated: ${userReserveData.stableRateLastUpdated}`);
+        console.log(`usageAsCollateralEnabled: ${userReserveData.usageAsCollateralEnabled}`);
+      });
+
+      it('check getUserReserveData(dai,users[1].address)', async () => {
+        const {
+          dai,
+          weth,
+          usdc,
+          aave,
+          users,
+          pool,
+          oracle,
+          helpersContract,
+          flashLiquidationAdapter,
+        } = testEnv;
+        const userReserveData = await helpersContract.getUserReserveData(
+          dai.address,
+          users[1].address
+        );
+        console.log(`currentATokenBalance: ${userReserveData.currentATokenBalance}`);
+        console.log(`currentStableDebt: ${userReserveData.currentStableDebt}`);
+        console.log(`currentVariableDebt: ${userReserveData.currentVariableDebt}`);
+        console.log(`principalStableDebt: ${userReserveData.principalStableDebt}`);
+        console.log(`scaledVariableDebt: ${userReserveData.scaledVariableDebt}`);
+        console.log(`stableBorrowRate: ${userReserveData.stableBorrowRate}`);
+        console.log(`liquidityRate: ${userReserveData.liquidityRate}`);
+        console.log(`stableRateLastUpdated: ${userReserveData.stableRateLastUpdated}`);
+        console.log(`usageAsCollateralEnabled: ${userReserveData.usageAsCollateralEnabled}`);
+      });
+
+      it('check getUserReserveData(weth,users[0].address)', async () => {
+        const {
+          dai,
+          weth,
+          usdc,
+          aave,
+          users,
+          pool,
+          oracle,
+          helpersContract,
+          flashLiquidationAdapter,
+        } = testEnv;
+        const userReserveData = await helpersContract.getUserReserveData(
+          weth.address,
+          users[0].address
+        );
+        console.log(`currentATokenBalance: ${userReserveData.currentATokenBalance}`);
+        console.log(`currentStableDebt: ${userReserveData.currentStableDebt}`);
+        console.log(`currentVariableDebt: ${userReserveData.currentVariableDebt}`);
+        console.log(`principalStableDebt: ${userReserveData.principalStableDebt}`);
+        console.log(`scaledVariableDebt: ${userReserveData.scaledVariableDebt}`);
+        console.log(`stableBorrowRate: ${userReserveData.stableBorrowRate}`);
+        console.log(`liquidityRate: ${userReserveData.liquidityRate}`);
+        console.log(`stableRateLastUpdated: ${userReserveData.stableRateLastUpdated}`);
+        console.log(`usageAsCollateralEnabled: ${userReserveData.usageAsCollateralEnabled}`);
+      });
+
+      it('check getUserReserveData(weth,users[1].address)', async () => {
+        const {
+          dai,
+          weth,
+          usdc,
+          aave,
+          users,
+          pool,
+          oracle,
+          helpersContract,
+          flashLiquidationAdapter,
+        } = testEnv;
+        const userReserveData = await helpersContract.getUserReserveData(
+          weth.address,
+          users[1].address
+        );
+        console.log(`currentATokenBalance: ${userReserveData.currentATokenBalance}`);
+        console.log(`currentStableDebt: ${userReserveData.currentStableDebt}`);
+        console.log(`currentVariableDebt: ${userReserveData.currentVariableDebt}`);
+        console.log(`principalStableDebt: ${userReserveData.principalStableDebt}`);
+        console.log(`scaledVariableDebt: ${userReserveData.scaledVariableDebt}`);
+        console.log(`stableBorrowRate: ${userReserveData.stableBorrowRate}`);
+        console.log(`liquidityRate: ${userReserveData.liquidityRate}`);
+        console.log(`stableRateLastUpdated: ${userReserveData.stableRateLastUpdated}`);
+        console.log(`usageAsCollateralEnabled: ${userReserveData.usageAsCollateralEnabled}`);
+      });
+
+      it('check getReserveTokensAddresses(dai.address)', async () => {
+        const {
+          dai,
+          weth,
+          usdc,
+          aave,
+          users,
+          pool,
+          oracle,
+          helpersContract,
+          flashLiquidationAdapter,
+        } = testEnv;
+        const reserveTokensAddresses = await helpersContract.getReserveTokensAddresses(dai.address);
+        console.log(`aTokenAddress: ${reserveTokensAddresses.aTokenAddress}`);
+        console.log(`stableDebtTokenAddress: ${reserveTokensAddresses.stableDebtTokenAddress}`);
+        console.log(`variableDebtTokenAddress: ${reserveTokensAddresses.variableDebtTokenAddress}`);
+      });
+
+      it('check getReserveTokensAddresses(weth.address)', async () => {
+        const {
+          dai,
+          weth,
+          usdc,
+          aave,
+          users,
+          pool,
+          oracle,
+          helpersContract,
+          flashLiquidationAdapter,
+        } = testEnv;
+        const reserveTokensAddresses = await helpersContract.getReserveTokensAddresses(
+          weth.address
+        );
+        console.log(`aTokenAddress: ${reserveTokensAddresses.aTokenAddress}`);
+        console.log(`stableDebtTokenAddress: ${reserveTokensAddresses.stableDebtTokenAddress}`);
+        console.log(`variableDebtTokenAddress: ${reserveTokensAddresses.variableDebtTokenAddress}`);
+      });
+
+      it('check getReserveTokensAddresses(usdc.address)', async () => {
+        const {
+          dai,
+          weth,
+          usdc,
+          aave,
+          users,
+          pool,
+          oracle,
+          helpersContract,
+          flashLiquidationAdapter,
+        } = testEnv;
+        const reserveTokensAddresses = await helpersContract.getReserveTokensAddresses(
+          usdc.address
+        );
+        console.log(`aTokenAddress: ${reserveTokensAddresses.aTokenAddress}`);
+        console.log(`stableDebtTokenAddress: ${reserveTokensAddresses.stableDebtTokenAddress}`);
+        console.log(`variableDebtTokenAddress: ${reserveTokensAddresses.variableDebtTokenAddress}`);
+      });
+
+      it('check getReserveTokensAddresses(aave.address)', async () => {
+        const {
+          dai,
+          weth,
+          usdc,
+          aave,
+          users,
+          pool,
+          oracle,
+          helpersContract,
+          flashLiquidationAdapter,
+        } = testEnv;
+        const reserveTokensAddresses = await helpersContract.getReserveTokensAddresses(
+          aave.address
+        );
+        console.log(`aTokenAddress: ${reserveTokensAddresses.aTokenAddress}`);
+        console.log(`stableDebtTokenAddress: ${reserveTokensAddresses.stableDebtTokenAddress}`);
+        console.log(`variableDebtTokenAddress: ${reserveTokensAddresses.variableDebtTokenAddress}`);
+      });
     });
 
     describe('executeOperation: succesfully liquidateCall with same asset via Flash Loan, but no swap needed', () => {
