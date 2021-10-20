@@ -970,7 +970,7 @@ makeSuite('Uniswap adapters', (testEnv: TestEnv) => {
         console.log(`variableDebtTokenAddress: ${reserveTokensAddresses.variableDebtTokenAddress}`);
       });
 
-      it('check helpersContract.MKR, its value is not equal to [addressZero]', async () => {
+      it('check helpersContract.ADDRESSES_PROVIDER, its value is not equal to [addressZero]', async () => {
         const {
           dai,
           weth,
