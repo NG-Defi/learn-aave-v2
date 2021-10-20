@@ -522,6 +522,7 @@ makeSuite('Uniswap adapters', (testEnv: TestEnv) => {
         console.log(`walletBalance: ${userReserveData.walletBalance}`);
       });
 
+      // new test case
       it('check helpersContract.getReserveConfigurationData(dai.address), and print its all results', async () => {
         const { dai, weth, users, pool, oracle, helpersContract, flashLiquidationAdapter } =
           testEnv;
@@ -542,6 +543,7 @@ makeSuite('Uniswap adapters', (testEnv: TestEnv) => {
         console.log(`isFrozen: ${reserveConfigurationData.isFrozen}`);
       });
 
+      // new test case
       it('check helpersContract.getReserveConfigurationData(weth.address), and print its all results', async () => {
         const { dai, weth, users, pool, oracle, helpersContract, flashLiquidationAdapter } =
           testEnv;
@@ -562,6 +564,7 @@ makeSuite('Uniswap adapters', (testEnv: TestEnv) => {
         console.log(`isFrozen: ${reserveConfigurationData.isFrozen}`);
       });
 
+      // new test case
       it('check helpersContract.getAllATokens(), check its allTokens[aDai].tokenAddress = testEnv.aDai.address', async () => {
         const {
           dai,
@@ -583,10 +586,13 @@ makeSuite('Uniswap adapters', (testEnv: TestEnv) => {
         expect(aWEthAddress).to.be.equal(await aWETH.address);
       });
 
+      // new test case
       it('check helpersContract.getAllATokens(), check its allTokens[aDai].symbol = testEnv.aDai.symbol', async () => {
         const {
           dai,
           weth,
+          usdc,
+          aave,
           aDai,
           aWETH,
           users,
@@ -602,6 +608,37 @@ makeSuite('Uniswap adapters', (testEnv: TestEnv) => {
 
         expect(aDaiSymbol).to.be.equal(await aDai.symbol());
         expect(aWETHSymbol).to.be.equal(await aWETH.symbol());
+      });
+
+      // new test case
+      it('check helpersContract.getAllReservesTokens(), check its getAllReservesTokens[dai].symbol = dai.symbol', async () => {
+        const {
+          dai,
+          weth,
+          usdc,
+          aave,
+          aDai,
+          aWETH,
+          users,
+          pool,
+          oracle,
+          helpersContract,
+          flashLiquidationAdapter,
+        } = testEnv;
+
+        const allReservesTokens = await testEnv.helpersContract.getAllReservesTokens();
+        expect(allReservesTokens.find((aToken) => aToken.symbol === 'DAI')?.symbol).to.be.equal(
+          await dai.symbol()
+        );
+        expect(allReservesTokens.find((aToken) => aToken.symbol === 'WETH')?.symbol).to.be.equal(
+          await weth.symbol()
+        );
+        expect(allReservesTokens.find((aToken) => aToken.symbol === 'USDC')?.symbol).to.be.equal(
+          await usdc.symbol()
+        );
+        expect(allReservesTokens.find((aToken) => aToken.symbol === 'AAVE')?.symbol).to.be.equal(
+          await aave.symbol()
+        );
       });
     });
 
