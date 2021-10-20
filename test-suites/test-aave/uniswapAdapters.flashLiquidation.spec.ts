@@ -776,6 +776,7 @@ makeSuite('Uniswap adapters', (testEnv: TestEnv) => {
         console.log(`lastUpdateTimestamp: ${reserveData.lastUpdateTimestamp}`);
       });
 
+      // new test case
       it('check getUserReserveData(dai,users[0].address)', async () => {
         const {
           dai,
@@ -803,6 +804,7 @@ makeSuite('Uniswap adapters', (testEnv: TestEnv) => {
         console.log(`usageAsCollateralEnabled: ${userReserveData.usageAsCollateralEnabled}`);
       });
 
+      // new test case
       it('check getUserReserveData(dai,users[1].address)', async () => {
         const {
           dai,
@@ -830,6 +832,7 @@ makeSuite('Uniswap adapters', (testEnv: TestEnv) => {
         console.log(`usageAsCollateralEnabled: ${userReserveData.usageAsCollateralEnabled}`);
       });
 
+      // new test case
       it('check getUserReserveData(weth,users[0].address)', async () => {
         const {
           dai,
@@ -857,6 +860,7 @@ makeSuite('Uniswap adapters', (testEnv: TestEnv) => {
         console.log(`usageAsCollateralEnabled: ${userReserveData.usageAsCollateralEnabled}`);
       });
 
+      // new test case
       it('check getUserReserveData(weth,users[1].address)', async () => {
         const {
           dai,
@@ -884,6 +888,7 @@ makeSuite('Uniswap adapters', (testEnv: TestEnv) => {
         console.log(`usageAsCollateralEnabled: ${userReserveData.usageAsCollateralEnabled}`);
       });
 
+      // new test case
       it('check getReserveTokensAddresses(dai.address)', async () => {
         const {
           dai,
@@ -902,6 +907,7 @@ makeSuite('Uniswap adapters', (testEnv: TestEnv) => {
         console.log(`variableDebtTokenAddress: ${reserveTokensAddresses.variableDebtTokenAddress}`);
       });
 
+      // new test case
       it('check getReserveTokensAddresses(weth.address)', async () => {
         const {
           dai,
@@ -922,6 +928,7 @@ makeSuite('Uniswap adapters', (testEnv: TestEnv) => {
         console.log(`variableDebtTokenAddress: ${reserveTokensAddresses.variableDebtTokenAddress}`);
       });
 
+      // new test case
       it('check getReserveTokensAddresses(usdc.address)', async () => {
         const {
           dai,
@@ -942,6 +949,7 @@ makeSuite('Uniswap adapters', (testEnv: TestEnv) => {
         console.log(`variableDebtTokenAddress: ${reserveTokensAddresses.variableDebtTokenAddress}`);
       });
 
+      // new test case
       it('check getReserveTokensAddresses(aave.address)', async () => {
         const {
           dai,
@@ -960,6 +968,21 @@ makeSuite('Uniswap adapters', (testEnv: TestEnv) => {
         console.log(`aTokenAddress: ${reserveTokensAddresses.aTokenAddress}`);
         console.log(`stableDebtTokenAddress: ${reserveTokensAddresses.stableDebtTokenAddress}`);
         console.log(`variableDebtTokenAddress: ${reserveTokensAddresses.variableDebtTokenAddress}`);
+      });
+
+      it('check helpersContract.MKR, its value is not equal to [addressZero]', async () => {
+        const {
+          dai,
+          weth,
+          usdc,
+          aave,
+          users,
+          pool,
+          oracle,
+          helpersContract,
+          flashLiquidationAdapter,
+        } = testEnv;
+        expect(await helpersContract.ADDRESSES_PROVIDER()).to.not.be.equal(constants.AddressZero);
       });
     });
 
