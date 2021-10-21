@@ -173,19 +173,19 @@ makeSuite('Upgradeability', (testEnv: TestEnv) => {
     expect(await getLendingPoolConfiguratorProxy()).to.be.not.equal(constants.AddressZero);
   });
 
-  it('check getLendingPool() in contracts-getters', async () => {
-    const { dai, configurator, users, addressesProvider } = testEnv;
-    const lendingPool = await getLendingPool();
-    console.log(`lendPool.address: ${await lendingPool.address}`);
-    console.log(`lendPool.LENDINGPOOL_REVISION: ${await lendingPool.LENDINGPOOL_REVISION()}`);
-    console.log(`lendPool.getAddressesProvider: ${await lendingPool.getAddressesProvider()}`);
-    console.log(`testEnv.addressesProvider: ${await addressesProvider.address}`);
-    // expect(await lendingPool.getAddressesProvider()).to.be.equal(await addressesProvider.address);
+  // it('check getLendingPool() in contracts-getters', async () => {
+  //   const { dai, configurator, users, addressesProvider } = testEnv;
+  //   const lendingPool = await getLendingPool();
+  //   console.log(`lendPool.address: ${await lendingPool.address}`);
+  //   console.log(`lendPool.LENDINGPOOL_REVISION: ${await lendingPool.LENDINGPOOL_REVISION()}`);
+  //   console.log(`lendPool.getAddressesProvider: ${await lendingPool.getAddressesProvider()}`);
+  //   console.log(`testEnv.addressesProvider: ${await addressesProvider.address}`);
+  //   // expect(await lendingPool.getAddressesProvider()).to.be.equal(await addressesProvider.address);
 
-    console.log(
-      `lendingPool.getConfiguration(dai) : ${await lendingPool.getConfiguration(dai.address)}`
-    );
-  });
+  //   console.log(
+  //     `lendingPool.getConfiguration(dai) : ${await lendingPool.getConfiguration(dai.address)}`
+  //   );
+  // });
 
   it('check getPriceOracle() in contracts-getters', async () => {
     const { dai, weth, aDai, aWETH, aave, usdc, configurator, users, addressesProvider } = testEnv;
