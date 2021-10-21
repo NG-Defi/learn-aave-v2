@@ -1,6 +1,7 @@
 import { makeSuite, TestEnv } from './helpers/make-suite';
 import {
   convertToCurrencyDecimals,
+  convertToCurrencyUnits,
   getContract,
   buildPermitParams,
   getSignatureFromTypedData,
@@ -17,6 +18,7 @@ import { eContractid } from '../../helpers/types';
 import { AToken } from '../../types/AToken';
 import { BUIDLEREVM_CHAINID } from '../../helpers/buidler-constants';
 import { MAX_UINT_AMOUNT } from '../../helpers/constants';
+import { parseUnits } from 'ethers/lib/utils';
 const { parseEther } = ethers.utils;
 
 const { expect } = require('chai');
@@ -46,6 +48,9 @@ makeSuite('Uniswap adapters', (testEnv: TestEnv) => {
           mockUniswapRouter.address,
           weth.address,
         ]);
+        console.log(`addressesProvider: ${addressesProvider.address}`);
+        console.log(`mockUniswapRouter: ${mockUniswapRouter.address}`);
+        console.log(`weth: ${weth.address}`);
       });
 
       it('should revert if not valid addresses provider', async () => {
@@ -56,6 +61,13 @@ makeSuite('Uniswap adapters', (testEnv: TestEnv) => {
             mockUniswapRouter.address,
             weth.address,
           ])
+        ).to.be.reverted;
+      });
+
+      it('should revert if not valid addresses provider, PART II', async () => {
+        const { addressesProvider, weth } = testEnv;
+        await expect(
+          deployUniswapLiquiditySwapAdapter([weth.address, mockUniswapRouter.address, weth.address])
         ).to.be.reverted;
       });
     });
@@ -82,16 +94,8 @@ makeSuite('Uniswap adapters', (testEnv: TestEnv) => {
       });
 
       it('should correctly swap tokens and deposit the out tokens in the pool', async () => {
-        const {
-          users,
-          weth,
-          oracle,
-          dai,
-          aDai,
-          aWETH,
-          pool,
-          uniswapLiquiditySwapAdapter,
-        } = testEnv;
+        const { users, weth, oracle, dai, aDai, aWETH, pool, uniswapLiquiditySwapAdapter } =
+          testEnv;
         const user = users[0].signer;
         const userAddress = users[0].address;
 
@@ -159,17 +163,8 @@ makeSuite('Uniswap adapters', (testEnv: TestEnv) => {
       });
 
       it('should correctly swap and deposit multiple tokens', async () => {
-        const {
-          users,
-          weth,
-          oracle,
-          dai,
-          aDai,
-          aWETH,
-          usdc,
-          pool,
-          uniswapLiquiditySwapAdapter,
-        } = testEnv;
+        const { users, weth, oracle, dai, aDai, aWETH, usdc, pool, uniswapLiquiditySwapAdapter } =
+          testEnv;
         const user = users[0].signer;
         const userAddress = users[0].address;
 
@@ -275,17 +270,8 @@ makeSuite('Uniswap adapters', (testEnv: TestEnv) => {
       });
 
       it('should correctly swap and deposit multiple tokens using permit', async () => {
-        const {
-          users,
-          weth,
-          oracle,
-          dai,
-          aDai,
-          aWETH,
-          usdc,
-          pool,
-          uniswapLiquiditySwapAdapter,
-        } = testEnv;
+        const { users, weth, oracle, dai, aDai, aWETH, usdc, pool, uniswapLiquiditySwapAdapter } =
+          testEnv;
         const user = users[0].signer;
         const userAddress = users[0].address;
         const chainId = DRE.network.config.chainId || BUIDLEREVM_CHAINID;
@@ -357,10 +343,11 @@ makeSuite('Uniswap adapters', (testEnv: TestEnv) => {
           deadline,
           amountWETHtoSwap.toString()
         );
-        const { v: aWETHv, r: aWETHr, s: aWETHs } = getSignatureFromTypedData(
-          ownerPrivateKey,
-          aWethMsgParams
-        );
+        const {
+          v: aWETHv,
+          r: aWETHr,
+          s: aWETHs,
+        } = getSignatureFromTypedData(ownerPrivateKey, aWethMsgParams);
 
         const aUsdcNonce = (await aUsdc._nonces(userAddress)).toNumber();
         const aUsdcMsgParams = buildPermitParams(
@@ -374,10 +361,11 @@ makeSuite('Uniswap adapters', (testEnv: TestEnv) => {
           deadline,
           amountUSDCtoSwap.toString()
         );
-        const { v: aUsdcv, r: aUsdcr, s: aUsdcs } = getSignatureFromTypedData(
-          ownerPrivateKey,
-          aUsdcMsgParams
-        );
+        const {
+          v: aUsdcv,
+          r: aUsdcr,
+          s: aUsdcs,
+        } = getSignatureFromTypedData(ownerPrivateKey, aUsdcMsgParams);
         const params = buildLiquiditySwapParams(
           [dai.address, dai.address],
           [expectedDaiAmountForEth, expectedDaiAmountForUsdc],
@@ -389,6 +377,8 @@ makeSuite('Uniswap adapters', (testEnv: TestEnv) => {
           [aWETHs, aUsdcs],
           [false, false]
         );
+
+        console.log(`params: ${params}`);
 
         await pool
           .connect(user)
@@ -423,16 +413,8 @@ makeSuite('Uniswap adapters', (testEnv: TestEnv) => {
       });
 
       it('should correctly swap tokens with permit', async () => {
-        const {
-          users,
-          weth,
-          oracle,
-          dai,
-          aDai,
-          aWETH,
-          pool,
-          uniswapLiquiditySwapAdapter,
-        } = testEnv;
+        const { users, weth, oracle, dai, aDai, aWETH, pool, uniswapLiquiditySwapAdapter } =
+          testEnv;
         const user = users[0].signer;
         const userAddress = users[0].address;
 
@@ -486,6 +468,8 @@ makeSuite('Uniswap adapters', (testEnv: TestEnv) => {
           [s],
           [false]
         );
+
+        console.log(`permit params: ${params}`);
 
         await expect(
           pool
@@ -783,6 +767,86 @@ makeSuite('Uniswap adapters', (testEnv: TestEnv) => {
         ).to.be.revertedWith('INCONSISTENT_PARAMS');
       });
 
+      it('should convertToCurrencyDecimals(weth,100)', async () => {
+        const { users, weth, aWETH, dai, aDai, usdc, aave, oracle, uniswapLiquiditySwapAdapter } =
+          testEnv;
+        const amount = await convertToCurrencyDecimals(weth.address, '100');
+        // console.log(`100 weth in decimals is: ${amount}`);
+        expect(amount).to.be.equal(parseEther('100'));
+      });
+
+      it('should convertToCurrencyDecimals(aWETH,100)', async () => {
+        const { users, weth, aWETH, dai, aDai, usdc, aave, oracle, uniswapLiquiditySwapAdapter } =
+          testEnv;
+        const amount = await convertToCurrencyDecimals(aWETH.address, '100');
+        // console.log(`100 aWETH in decimals is: ${amount}`);
+        expect(amount).to.be.equal(parseEther('100'));
+      });
+
+      it('should convertToCurrencyDecimals(dai,100)', async () => {
+        const { users, weth, aWETH, dai, aDai, usdc, aave, oracle, uniswapLiquiditySwapAdapter } =
+          testEnv;
+        const amount = await convertToCurrencyDecimals(dai.address, '100');
+        // console.log(`100 dai in decimals is: ${amount}`);
+        expect(amount).to.be.equal(parseEther('100'));
+      });
+
+      it('should convertToCurrencyDecimals(aDai,100)', async () => {
+        const { users, weth, aWETH, dai, aDai, usdc, aave, oracle, uniswapLiquiditySwapAdapter } =
+          testEnv;
+        const amount = await convertToCurrencyDecimals(aDai.address, '100');
+        // console.log(`100 aDai in decimals is: ${amount}`);
+        expect(amount).to.be.equal(parseEther('100'));
+      });
+
+      it('should convertToCurrencyDecimals(usdc,100)', async () => {
+        const { users, weth, aWETH, dai, aDai, usdc, aave, oracle, uniswapLiquiditySwapAdapter } =
+          testEnv;
+        const amount = await convertToCurrencyDecimals(usdc.address, '100');
+        // console.log(`100 usdc in decimals is: ${amount}`);
+        expect(amount).to.be.equal(parseUnits('100', 6));
+      });
+
+      it('should convertToCurrencyDecimals(aave,100)', async () => {
+        const { users, weth, aWETH, dai, aDai, usdc, aave, oracle, uniswapLiquiditySwapAdapter } =
+          testEnv;
+        const amount = await convertToCurrencyDecimals(aave.address, '100');
+        // console.log(`100 aave in decimals is: ${amount}`);
+        expect(amount).to.be.equal(parseEther('100'));
+      });
+
+      it('should convertToCurrencyUnits(weth,100e18)', async () => {
+        const { users, weth, aWETH, dai, aDai, usdc, aave, oracle, uniswapLiquiditySwapAdapter } =
+          testEnv;
+        const amount = await convertToCurrencyUnits(weth.address, parseEther('100').toString());
+        console.log(`100 weth in unit is: ${amount}`);
+        expect(amount).to.be.equal('100');
+      });
+
+      it('check contracts-helpers.convertToCurrencyUnits()', async () => {
+        const { users, weth, aWETH, dai, aDai, usdc, aave, oracle, uniswapLiquiditySwapAdapter } =
+          testEnv;
+
+        expect(
+          await convertToCurrencyUnits(weth.address, parseEther('100').toString())
+        ).to.be.equal('100');
+        expect(
+          await convertToCurrencyUnits(aWETH.address, parseEther('100').toString())
+        ).to.be.equal('100');
+        expect(await convertToCurrencyUnits(dai.address, parseEther('100').toString())).to.be.equal(
+          '100'
+        );
+        expect(
+          await convertToCurrencyUnits(aDai.address, parseEther('100').toString())
+        ).to.be.equal('100');
+        expect(
+          await convertToCurrencyUnits(usdc.address, parseUnits('100', 6).toString())
+        ).to.be.equal('100');
+        expect(
+          await convertToCurrencyUnits(aave.address, parseEther('100').toString())
+        ).to.be.equal('100');
+      });
+
       it('should revert if caller not lending pool', async () => {
         const { users, weth, oracle, dai, aWETH, uniswapLiquiditySwapAdapter } = testEnv;
         const user = users[0].signer;
@@ -831,16 +895,8 @@ makeSuite('Uniswap adapters', (testEnv: TestEnv) => {
       });
 
       it('should work correctly with tokens of different decimals', async () => {
-        const {
-          users,
-          usdc,
-          oracle,
-          dai,
-          aDai,
-          uniswapLiquiditySwapAdapter,
-          pool,
-          deployer,
-        } = testEnv;
+        const { users, usdc, oracle, dai, aDai, uniswapLiquiditySwapAdapter, pool, deployer } =
+          testEnv;
         const user = users[0].signer;
         const userAddress = users[0].address;
 
@@ -979,16 +1035,8 @@ makeSuite('Uniswap adapters', (testEnv: TestEnv) => {
       });
 
       it('should correctly swap tokens all the balance', async () => {
-        const {
-          users,
-          weth,
-          oracle,
-          dai,
-          aDai,
-          aWETH,
-          pool,
-          uniswapLiquiditySwapAdapter,
-        } = testEnv;
+        const { users, weth, oracle, dai, aDai, aWETH, pool, uniswapLiquiditySwapAdapter } =
+          testEnv;
         const user = users[0].signer;
         const userAddress = users[0].address;
 
@@ -1062,16 +1110,8 @@ makeSuite('Uniswap adapters', (testEnv: TestEnv) => {
       });
 
       it('should correctly swap tokens all the balance using permit', async () => {
-        const {
-          users,
-          weth,
-          oracle,
-          dai,
-          aDai,
-          aWETH,
-          pool,
-          uniswapLiquiditySwapAdapter,
-        } = testEnv;
+        const { users, weth, oracle, dai, aDai, aWETH, pool, uniswapLiquiditySwapAdapter } =
+          testEnv;
         const user = users[0].signer;
         const userAddress = users[0].address;
 
@@ -1459,17 +1499,8 @@ makeSuite('Uniswap adapters', (testEnv: TestEnv) => {
       });
 
       it('should correctly swap tokens and deposit multiple tokens', async () => {
-        const {
-          users,
-          weth,
-          usdc,
-          oracle,
-          dai,
-          aDai,
-          aWETH,
-          uniswapLiquiditySwapAdapter,
-          pool,
-        } = testEnv;
+        const { users, weth, usdc, oracle, dai, aDai, aWETH, uniswapLiquiditySwapAdapter, pool } =
+          testEnv;
         const user = users[0].signer;
         const userAddress = users[0].address;
 
@@ -1561,17 +1592,8 @@ makeSuite('Uniswap adapters', (testEnv: TestEnv) => {
       });
 
       it('should correctly swap tokens and deposit multiple tokens using permit', async () => {
-        const {
-          users,
-          weth,
-          usdc,
-          oracle,
-          dai,
-          aDai,
-          aWETH,
-          uniswapLiquiditySwapAdapter,
-          pool,
-        } = testEnv;
+        const { users, weth, usdc, oracle, dai, aDai, aWETH, uniswapLiquiditySwapAdapter, pool } =
+          testEnv;
         const user = users[0].signer;
         const userAddress = users[0].address;
         const chainId = DRE.network.config.chainId || BUIDLEREVM_CHAINID;
@@ -1635,10 +1657,11 @@ makeSuite('Uniswap adapters', (testEnv: TestEnv) => {
           deadline,
           amountWETHtoSwap.toString()
         );
-        const { v: aWETHv, r: aWETHr, s: aWETHs } = getSignatureFromTypedData(
-          ownerPrivateKey,
-          aWethMsgParams
-        );
+        const {
+          v: aWETHv,
+          r: aWETHr,
+          s: aWETHs,
+        } = getSignatureFromTypedData(ownerPrivateKey, aWethMsgParams);
 
         const aUsdcNonce = (await aUsdc._nonces(userAddress)).toNumber();
         const aUsdcMsgParams = buildPermitParams(
@@ -1652,10 +1675,11 @@ makeSuite('Uniswap adapters', (testEnv: TestEnv) => {
           deadline,
           amountUSDCtoSwap.toString()
         );
-        const { v: aUsdcv, r: aUsdcr, s: aUsdcs } = getSignatureFromTypedData(
-          ownerPrivateKey,
-          aUsdcMsgParams
-        );
+        const {
+          v: aUsdcv,
+          r: aUsdcr,
+          s: aUsdcs,
+        } = getSignatureFromTypedData(ownerPrivateKey, aUsdcMsgParams);
 
         await uniswapLiquiditySwapAdapter.connect(user).swapAndDeposit(
           [weth.address, usdc.address],
