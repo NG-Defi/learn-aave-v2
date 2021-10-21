@@ -13,7 +13,7 @@ import { Zero } from '@ethersproject/constants';
 import BigNumber from 'bignumber.js';
 import { DRE, evmRevert, evmSnapshot } from '../../helpers/misc-utils';
 import { ethers } from 'ethers';
-import { eContractid } from '../../helpers/types';
+import { eContractid, EthereumNetworkNames, AavePools, ProtocolErrors } from '../../helpers/types';
 import { StableDebtToken } from '../../types/StableDebtToken';
 import { BUIDLEREVM_CHAINID } from '../../helpers/buidler-constants';
 import { MAX_UINT_AMOUNT } from '../../helpers/constants';
@@ -206,6 +206,29 @@ makeSuite('Uniswap adapters', (testEnv: TestEnv) => {
         }
       });
 
+      // new test case
+      it('test EthereumNetworkNames in helpers/types.ts', async () => {
+        const { users, pool, weth, aWETH, oracle, dai, uniswapRepayAdapter, helpersContract } =
+          testEnv;
+        for (var str in EthereumNetworkNames) {
+          console.log(`EthereumNetworkNames: ${str}`);
+        }
+      });
+
+      // new test case
+      it('test AavePools in helpers/types.ts', async () => {
+        for (var str in AavePools) {
+          console.log(`AavePools: ${str}`);
+        }
+      });
+
+      // new test case
+      it('test ProtocolErrors in helpers/types.ts', async () => {
+        for (var str in ProtocolErrors) {
+          console.log(`ProtocolErrors: ${str}`);
+        }
+      });
+
       it('should correctly swap tokens and repay debt with permit', async () => {
         const { users, pool, weth, aWETH, oracle, dai, uniswapRepayAdapter, helpersContract } =
           testEnv;
@@ -311,6 +334,14 @@ makeSuite('Uniswap adapters', (testEnv: TestEnv) => {
         expect(userDaiStableDebtAmount).to.be.lt(expectedDaiAmount);
         expect(userAEthBalance).to.be.lt(userAEthBalanceBefore);
         expect(userAEthBalance).to.be.gte(userAEthBalanceBefore.sub(liquidityToSwap));
+
+        console.log(`userDaiStableDebtAmountBefore: ${formatEther(userDaiStableDebtAmountBefore)}`);
+        console.log(`userDaiStableDebtAmount: ${formatEther(userDaiStableDebtAmount)}`);
+        console.log(`expectedDaiAmount: ${formatEther(expectedDaiAmount)}`);
+        console.log(`---------------------------------------------------------------`);
+        console.log(`userAEthBalance: ${formatEther(userAEthBalance)}`);
+        console.log(`userAEthBalanceBefore: ${formatEther(userAEthBalanceBefore)}`);
+        console.log(`liquidityToSwap: ${formatEther(liquidityToSwap)}`);
       });
 
       it('should revert if caller not lending pool', async () => {
