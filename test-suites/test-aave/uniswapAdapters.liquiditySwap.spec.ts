@@ -1820,6 +1820,7 @@ makeSuite('Uniswap adapters', (testEnv: TestEnv) => {
         const bigAmountToSwap = parseEther('100');
 
         const chainId = DRE.network.config.chainId || BUIDLEREVM_CHAINID;
+        console.log(`chainId: ${chainId}`);
         const deadline = MAX_UINT_AMOUNT;
 
         const ownerPrivateKey = require('../../test-wallets.js').accounts[1].secretKey;
